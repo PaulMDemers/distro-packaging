@@ -1,0 +1,456 @@
+#!/usr/bin/env python3
+"""Demuntu setup and package-set launcher."""
+
+from __future__ import annotations
+
+import argparse
+import os
+import shlex
+import shutil
+import subprocess
+import sys
+import threading
+from dataclasses import dataclass
+from pathlib import Path
+
+
+PACKAGE_SETS_DIR = Path(os.environ.get("DEMUNTU_PACKAGE_SETS_DIR", "/usr/lib/demuntu/package-sets"))
+STATE_FILE = Path(
+    os.environ.get("DEMUNTU_WELCOME_STATE", str(Path.home() / ".config" / "demuntu" / "welcome-seen"))
+)
+WELCOME_TEXT = """Welcome to Demuntu Red Chrome.
+
+This live desktop is built from Ubuntu with Demuntu local packages layered in:
+
+- demuntu-branding
+- demuntu-base
+- demuntu-desktop
+
+The current desktop profile includes XFCE, LightDM autologin, NetworkManager,
+audio controls, DemChrome branding, and optional developer package sets."""
+
+
+@dataclass(frozen=True)
+class PackageSet:
+    set_id: str
+    name: str
+    summary: str
+
+
+@dataclass(frozen=True)
+class DesktopEntry:
+    name: str
+    exec_line: str
+    path: Path
+
+
+def title_from_id(set_id: str) -> str:
+    return " ".join(part.capitalize() for part in set_id.replace("_", "-").split("-"))
+
+
+def catalog_sets() -> dict[str, PackageSet]:
+    catalog = PACKAGE_SETS_DIR / "configs" / "catalog.tsv"
+    if not catalog.exists():
+        return {}
+
+    sets: dict[str, PackageSet] = {}
+    for line in catalog.read_text(encoding="utf-8").splitlines():
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split("\t")
+        if len(parts) < 3:
+            continue
+        set_id, name, summary = parts[:3]
+        sets[set_id] = PackageSet(set_id, name, summary)
+    return sets
+
+
+def available_sets() -> list[PackageSet]:
+    scripts_dir = PACKAGE_SETS_DIR / "sets"
+    configs_dir = PACKAGE_SETS_DIR / "configs"
+    known_sets = catalog_sets()
+    ids: set[str] = set()
+
+    if scripts_dir.is_dir():
+        ids.update(path.stem for path in scripts_dir.glob("*.sh"))
+    if configs_dir.is_dir():
+        ids.update(path.name.removesuffix(".packages") for path in configs_dir.glob("*.packages"))
+
+    sets: list[PackageSet] = []
+    for set_id in sorted(ids):
+        if set_id in known_sets:
+            sets.append(known_sets[set_id])
+        else:
+            sets.append(PackageSet(set_id, title_from_id(set_id), "Optional Demuntu package set"))
+    return sets
+
+
+def mark_seen() -> None:
+    STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    STATE_FILE.write_text("seen\n", encoding="utf-8")
+
+
+def should_skip_first_run() -> bool:
+    return STATE_FILE.exists()
+
+
+def install_command(selected: list[str]) -> list[str]:
+    installer = PACKAGE_SETS_DIR / "install.sh"
+    if not installer.exists():
+        raise RuntimeError(f"missing package-set installer: {installer}")
+
+    command = [str(installer), ",".join(selected)]
+    if os.geteuid() == 0:
+        return command
+
+    for helper in ("pkexec", "sudo"):
+        helper_path = shutil.which(helper)
+        if helper_path:
+            return [helper_path, *command]
+
+    raise RuntimeError("installing package sets requires pkexec or sudo")
+
+
+def run_install(selected: list[str], emit) -> int:
+    if not selected:
+        emit("No package sets selected.\n")
+        mark_seen()
+        return 0
+
+    try:
+        command = install_command(selected)
+    except RuntimeError as exc:
+        emit(f"{exc}\n")
+        return 1
+
+    emit(f"Running: {' '.join(command)}\n\n")
+    process = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1,
+    )
+
+    assert process.stdout is not None
+    for line in process.stdout:
+        emit(line)
+
+    rc = process.wait()
+    if rc == 0:
+        emit("\nPackage set installation completed.\n")
+        mark_seen()
+    else:
+        emit(f"\nPackage set installation failed with exit code {rc}.\n")
+    return rc
+
+
+def parse_desktop_entry(path: Path) -> DesktopEntry | None:
+    try:
+        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return None
+
+    values: dict[str, str] = {}
+    for line in lines:
+        if "=" not in line or line.startswith("#"):
+            continue
+        key, value = line.split("=", 1)
+        if key in {"Name", "Exec", "NoDisplay"}:
+            values[key] = value
+
+    if values.get("NoDisplay", "").lower() == "true":
+        return None
+    if "Exec" not in values:
+        return None
+    return DesktopEntry(values.get("Name", path.stem), values["Exec"], path)
+
+
+def installer_entries() -> list[DesktopEntry]:
+    roots = [
+        Path.home() / "Desktop",
+        Path("/usr/share/applications"),
+        Path("/snap/ubuntu-desktop-bootstrap/current/meta/gui"),
+    ]
+    entries: list[DesktopEntry] = []
+    seen: set[Path] = set()
+
+    for root in roots:
+        if not root.is_dir():
+            continue
+        for path in sorted(root.glob("*.desktop")):
+            if path in seen:
+                continue
+            seen.add(path)
+            entry = parse_desktop_entry(path)
+            if not entry:
+                continue
+            haystack = f"{entry.name} {entry.exec_line} {path.name}".lower()
+            if "install" in haystack and any(word in haystack for word in ("ubuntu", "demuntu", "desktop", "bootstrap")):
+                entries.append(entry)
+    return entries
+
+
+def command_from_desktop_entry(entry: DesktopEntry) -> list[str]:
+    cleaned = []
+    for part in shlex.split(entry.exec_line):
+        if part.startswith("%"):
+            continue
+        cleaned.append(part)
+    return cleaned
+
+
+def launch_installer() -> str:
+    entries = installer_entries()
+    if entries:
+        command = command_from_desktop_entry(entries[0])
+        if command:
+            subprocess.Popen(command, start_new_session=True)
+            return f"Launched {entries[0].name}.\n"
+
+    for command in (
+        ["ubuntu-desktop-installer"],
+        ["ubuntu-desktop-bootstrap"],
+        ["snap", "run", "ubuntu-desktop-bootstrap"],
+    ):
+        if shutil.which(command[0]):
+            subprocess.Popen(command, start_new_session=True)
+            return f"Launched {' '.join(command)}.\n"
+
+    return "No desktop installer launcher was found in this live session.\n"
+
+
+def package_installed(name: str) -> bool:
+    return subprocess.run(
+        ["dpkg-query", "-W", "-f=${Status}", name],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        text=True,
+        check=False,
+    ).stdout.endswith("installed")
+
+
+def run_cli(first_run: bool) -> int:
+    if first_run and should_skip_first_run():
+        return 0
+
+    sets = available_sets()
+    print("Demuntu Welcome")
+    print()
+    print(WELCOME_TEXT)
+    print()
+    if not sets:
+        print("No Demuntu package sets are available.")
+        return 0
+
+    print("Available package sets:")
+    for index, package_set in enumerate(sets, start=1):
+        print(f"  {index}. {package_set.name} - {package_set.summary}")
+    print()
+    choice = input("Select package set numbers separated by commas, or press Enter for none: ").strip().lstrip("\ufeff")
+
+    selected: list[str] = []
+    if choice:
+        for item in choice.replace(",", " ").split():
+            try:
+                selected.append(sets[int(item) - 1].set_id)
+            except (ValueError, IndexError):
+                print(f"Invalid selection: {item}", file=sys.stderr)
+                return 2
+
+    return run_install(selected, lambda text: print(text, end=""))
+
+
+def center_window(root, width: int, height: int) -> None:
+    root.update_idletasks()
+    screen_w = root.winfo_screenwidth()
+    screen_h = root.winfo_screenheight()
+    x = max(0, (screen_w - width) // 2)
+    y = max(0, (screen_h - height) // 2)
+    root.geometry(f"{width}x{height}+{x}+{y}")
+
+
+def run_gui(first_run: bool) -> int:
+    if first_run and should_skip_first_run():
+        return 0
+
+    try:
+        import tkinter as tk
+        from tkinter import messagebox
+        from tkinter import scrolledtext
+        from tkinter import ttk
+    except ImportError:
+        return run_cli(first_run)
+
+    sets = available_sets()
+    root = tk.Tk()
+    root.title("Demuntu Welcome")
+    root.configure(bg="#1f2023")
+    root.minsize(720, 500)
+    center_window(root, 820, 560)
+
+    style = ttk.Style(root)
+    style.theme_use("clam")
+    style.configure(".", background="#1f2023", foreground="#eceff1", fieldbackground="#141518")
+    style.configure("TFrame", background="#1f2023")
+    style.configure("Card.TFrame", background="#26272a", relief="flat")
+    style.configure("TLabel", background="#1f2023", foreground="#eceff1")
+    style.configure("Card.TLabel", background="#26272a", foreground="#eceff1")
+    style.configure("Header.TLabel", font=("TkDefaultFont", 18, "bold"), foreground="#f4f6f7")
+    style.configure("Sub.TLabel", foreground="#b9bec3")
+    style.configure("TCheckbutton", background="#1f2023", foreground="#eceff1")
+    style.configure("TNotebook", background="#1f2023", borderwidth=0)
+    style.configure("TNotebook.Tab", background="#292a2d", foreground="#d7dde0", padding=(12, 7))
+    style.map("TNotebook.Tab", background=[("selected", "#3a3c40")], foreground=[("selected", "#ffffff")])
+    style.configure("TButton", background="#33363a", foreground="#f4f6f7", bordercolor="#565b60")
+    style.map("TButton", background=[("active", "#42464b")])
+    style.configure("Accent.TButton", foreground="#ffffff", background="#b71924")
+    style.map("Accent.TButton", background=[("active", "#d12834")])
+
+    outer = ttk.Frame(root, padding=20)
+    outer.pack(fill="both", expand=True)
+
+    header = ttk.Frame(outer)
+    header.pack(fill="x", pady=(0, 14))
+    ttk.Label(header, text="Demuntu Welcome", style="Header.TLabel").pack(side="left")
+    ttk.Label(header, text="Red Chrome desktop", style="Sub.TLabel").pack(side="right", pady=(7, 0))
+
+    notebook = ttk.Notebook(outer)
+    notebook.pack(fill="both", expand=True)
+
+    welcome_tab = ttk.Frame(notebook, padding=18)
+    setup_tab = ttk.Frame(notebook, padding=18)
+    system_tab = ttk.Frame(notebook, padding=18)
+    notebook.add(welcome_tab, text="Welcome")
+    notebook.add(setup_tab, text="Package Sets")
+    notebook.add(system_tab, text="System")
+
+    welcome_text = tk.Text(
+        welcome_tab,
+        height=12,
+        bg="#141518",
+        fg="#eceff1",
+        insertbackground="#eceff1",
+        relief="flat",
+        padx=12,
+        pady=12,
+        wrap="word",
+    )
+    welcome_text.insert("1.0", WELCOME_TEXT)
+    welcome_text.configure(state="disabled")
+    welcome_text.pack(fill="both", expand=True)
+
+    quick = ttk.Frame(welcome_tab)
+    quick.pack(fill="x", pady=(14, 0))
+
+    output = scrolledtext.ScrolledText(setup_tab, height=8, bg="#101113", fg="#eceff1", insertbackground="#eceff1")
+    output.pack(side="bottom", fill="both", expand=True, pady=(16, 0))
+    output.configure(state="disabled")
+
+    variables: dict[str, tk.BooleanVar] = {}
+    list_frame = ttk.Frame(setup_tab)
+    list_frame.pack(fill="x")
+    if sets:
+        for package_set in sets:
+            var = tk.BooleanVar(value=False)
+            variables[package_set.set_id] = var
+            row = ttk.Frame(list_frame)
+            row.pack(fill="x", pady=5)
+            ttk.Checkbutton(row, variable=var).pack(side="left", padx=(0, 8))
+            text = ttk.Frame(row)
+            text.pack(side="left", fill="x", expand=True)
+            ttk.Label(text, text=package_set.name).pack(anchor="w")
+            ttk.Label(text, text=package_set.summary, style="Sub.TLabel").pack(anchor="w")
+    else:
+        ttk.Label(list_frame, text="No Demuntu package sets are available.", style="Sub.TLabel").pack(anchor="w")
+
+    buttons = ttk.Frame(setup_tab)
+    buttons.pack(fill="x", pady=(14, 0))
+
+    def emit(text: str) -> None:
+        def append() -> None:
+            output.configure(state="normal")
+            output.insert("end", text)
+            output.see("end")
+            output.configure(state="disabled")
+
+        root.after(0, append)
+
+    def set_busy(busy: bool) -> None:
+        state = "disabled" if busy else "normal"
+        install_button.configure(state=state)
+        skip_button.configure(state=state)
+        later_button.configure(state=state)
+        installer_button.configure(state=state)
+
+    def install_selected() -> None:
+        selected = [set_id for set_id, var in variables.items() if var.get()]
+        if not selected:
+            mark_seen()
+            root.destroy()
+            return
+
+        set_busy(True)
+
+        def worker() -> None:
+            rc = run_install(selected, emit)
+            root.after(0, lambda: set_busy(False))
+            if rc == 0:
+                root.after(0, lambda: messagebox.showinfo("Demuntu Welcome", "Package set installation completed."))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def skip() -> None:
+        mark_seen()
+        root.destroy()
+
+    def later() -> None:
+        root.destroy()
+
+    def launch_installer_action() -> None:
+        emit(launch_installer())
+        notebook.select(setup_tab)
+
+    installer_button = ttk.Button(quick, text="Install Demuntu", style="Accent.TButton", command=launch_installer_action)
+    installer_button.pack(side="left")
+    ttk.Button(quick, text="Package Sets", command=lambda: notebook.select(setup_tab)).pack(side="left", padx=(8, 0))
+
+    later_button = ttk.Button(buttons, text="Remind Me Later", command=later)
+    later_button.pack(side="right")
+    skip_button = ttk.Button(buttons, text="Skip", command=skip)
+    skip_button.pack(side="right", padx=(0, 8))
+    install_button = ttk.Button(buttons, text="Install Selected", style="Accent.TButton", command=install_selected)
+    install_button.pack(side="right", padx=(0, 8))
+
+    essentials = [
+        ("Stock firmware", ["linux-firmware", "firmware-sof-signed"]),
+        ("Driver manager", ["ubuntu-drivers-common", "software-properties-gtk"]),
+        ("Network and Wi-Fi", ["network-manager", "network-manager-gnome", "wpasupplicant", "iw", "wireless-regdb"]),
+        ("Bluetooth", ["bluez", "blueman"]),
+        ("Sound", ["pipewire", "pipewire-pulse", "wireplumber", "alsa-utils", "pavucontrol"]),
+        ("Devices", ["udisks2", "upower", "fwupd", "gnome-disk-utility"]),
+    ]
+    for label, packages in essentials:
+        installed = sum(1 for package in packages if package_installed(package))
+        row = ttk.Frame(system_tab)
+        row.pack(fill="x", pady=5)
+        ttk.Label(row, text=label).pack(side="left")
+        ttk.Label(row, text=f"{installed}/{len(packages)}", style="Sub.TLabel").pack(side="right")
+
+    root.mainloop()
+    return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--first-run", action="store_true", help="exit if the welcome screen has already been seen")
+    parser.add_argument("--cli", action="store_true", help="use the terminal selector")
+    args = parser.parse_args()
+
+    if args.cli or not os.environ.get("DISPLAY"):
+        return run_cli(args.first_run)
+    return run_gui(args.first_run)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

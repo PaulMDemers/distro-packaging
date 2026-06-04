@@ -1,0 +1,12 @@
+PRETTY_NAME="Demuntu 0.1 (Resolute)"
+NAME="Demuntu"
+VERSION_ID="0.1"
+VERSION="0.1 (Resolute)"
+VERSION_CODENAME=resolute
+ID=demuntu
+ID_LIKE="ubuntu debian"
+VARIANT="Demuntu"
+VARIANT_ID=demuntu
+HOME_URL="https://demuntu.local/"
+SUPPORT_URL="https://demuntu.local/support"
+BUG_REPORT_URL="https://demuntu.local/bugs"

@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=DemChrome Theme
+Exec=/usr/lib/demuntu/apply-xfce-theme
+X-GNOME-Autostart-enabled=true

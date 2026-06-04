@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Demian Chrome
+Description=Red and silver Demian boot splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/demian-chrome
+ScriptFile=/usr/share/plymouth/themes/demian-chrome/demian-chrome.script

@@ -1,0 +1,103 @@
+#!/bin/sh
+set -eu
+
+wallpaper="/usr/share/backgrounds/demuntu/demuntu-default.png"
+icon_theme="DemChrome"
+gtk_theme="DemChrome-Dark"
+installer_name="Install Demuntu"
+installer_icon="distributor-logo-demuntu"
+log_dir="${XDG_CACHE_HOME:-$HOME/.cache}"
+log_file="$log_dir/demchrome-theme.log"
+
+[ -f "$wallpaper" ] || exit 0
+command -v xfconf-query >/dev/null 2>&1 || exit 0
+
+mkdir -p "$log_dir" 2>/dev/null || true
+exec >> "$log_file" 2>&1
+
+echo "DemChrome theme apply start: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+echo "DISPLAY=${DISPLAY:-} DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-}"
+
+sleep 1
+
+xfconf-query -c xsettings -p /Net/IconThemeName -n -t string -s "$icon_theme" >/dev/null 2>&1 || true
+xfconf-query -c xsettings -p /Net/ThemeName -n -t string -s "$gtk_theme" >/dev/null 2>&1 || true
+xfconf-query -c xfwm4 -p /general/theme -n -t string -s Default >/dev/null 2>&1 || true
+
+xfconf-query -c xfce4-panel -p /panels/panel-1/background-style -n -t uint -s 1 >/dev/null 2>&1 || true
+xfconf-query -c xfce4-panel -p /panels/panel-1/background-rgba -n \
+  -a -t double -s 0.22 -t double -s 0.23 -t double -s 0.25 -t double -s 1.0 >/dev/null 2>&1 || true
+xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-title -n -t string -s Demuntu >/dev/null 2>&1 || true
+xfconf-query -c xfce4-panel -p /plugins/plugin-1/show-button-title -n -t bool -s true >/dev/null 2>&1 || true
+
+nodes="$(
+  {
+    xfconf-query -c xfce4-desktop -l 2>/dev/null \
+      | sed -n 's#^\(/backdrop/screen[0-9][0-9]*/monitor[^/]*/workspace[0-9][0-9]*\)/.*#\1#p'
+    xfconf-query -c xfce4-desktop -l 2>/dev/null \
+      | sed -n 's#^\(/backdrop/screen[0-9][0-9]*/monitor[^/]*\)/.*#\1#p'
+    printf '%s\n' \
+      /backdrop/screen0/monitor0 \
+      /backdrop/screen0/monitor0/workspace0 \
+      /backdrop/screen0/monitor1 \
+      /backdrop/screen0/monitor1/workspace0 \
+      /backdrop/screen0/monitorVirtual-1 \
+      /backdrop/screen0/monitorVirtual-1/workspace0 \
+      /backdrop/screen0/monitorVirtual1 \
+      /backdrop/screen0/monitorVirtual1/workspace0 \
+      /backdrop/screen0/monitorVirtual-0 \
+      /backdrop/screen0/monitorVirtual-0/workspace0 \
+      /backdrop/screen0/monitorVGA-1 \
+      /backdrop/screen0/monitorVGA-1/workspace0 \
+      /backdrop/screen0/monitoreDP-1 \
+      /backdrop/screen0/monitoreDP-1/workspace0 \
+      /backdrop/screen0/monitorLVDS-1 \
+      /backdrop/screen0/monitorLVDS-1/workspace0 \
+      /backdrop/screen0/monitorHDMI-1 \
+      /backdrop/screen0/monitorHDMI-1/workspace0 \
+      /backdrop/screen0/monitorHDMI-A-1 \
+      /backdrop/screen0/monitorHDMI-A-1/workspace0 \
+      /backdrop/screen0/monitorDP-1 \
+      /backdrop/screen0/monitorDP-1/workspace0 \
+      /backdrop/screen0/monitorDisplayPort-0 \
+      /backdrop/screen0/monitorDisplayPort-0/workspace0 \
+      /backdrop/screen0/monitorDVI-I-1 \
+      /backdrop/screen0/monitorDVI-I-1/workspace0 \
+      /backdrop/screen0/monitorrdp0 \
+      /backdrop/screen0/monitorrdp0/workspace0
+  } | sed '/^$/d' | sort -u
+)"
+
+printf '%s\n' "$nodes" | while IFS= read -r node; do
+  [ -n "$node" ] || continue
+  echo "setting $node"
+  xfconf-query -c xfce4-desktop -p "$node/color-style" -n -t int -s 0 || true
+  xfconf-query -c xfce4-desktop -p "$node/image-show" -n -t bool -s true || true
+  xfconf-query -c xfce4-desktop -p "$node/image-style" -n -t int -s 5 || true
+  xfconf-query -c xfce4-desktop -p "$node/image-path" -n -t string -s "$wallpaper" || true
+  xfconf-query -c xfce4-desktop -p "$node/last-image" -n -t string -s "$wallpaper" || true
+  xfconf-query -c xfce4-desktop -p "$node/last-single-image" -n -t string -s "$wallpaper" || true
+done
+
+xfconf-query -c xfce4-desktop -l -v 2>/dev/null \
+  | grep -E 'image-path|last-image|last-single-image' \
+  | sed 's/^/backdrop /' || true
+
+desktop_dir="$HOME/Desktop"
+if [ -d "$desktop_dir" ]; then
+  for launcher in "$desktop_dir"/*.desktop; do
+    [ -f "$launcher" ] || continue
+    if grep -qiE 'ubuntu|ubiquity|subiquity|installer|install' "$launcher"; then
+      echo "branding installer launcher $launcher"
+      sed -i \
+        -e "s/^Name=.*/Name=$installer_name/" \
+        -e "s/^Name\\[en_US\\]=.*/Name[en_US]=$installer_name/" \
+        -e "s/^Icon=.*/Icon=$installer_icon/" \
+        "$launcher" || true
+      chmod +x "$launcher" 2>/dev/null || true
+    fi
+  done
+fi
+
+timeout 2s xfdesktop --reload >/dev/null 2>&1 || true
+echo "DemChrome theme apply done"

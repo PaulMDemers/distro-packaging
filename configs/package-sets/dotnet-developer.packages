@@ -1,0 +1,18 @@
+# Demian/Demuntu package set: dotnet-developer
+#
+# Package-managed core:
+dotnet-sdk-10.0
+aspnetcore-runtime-10.0
+git
+build-essential
+ca-certificates
+curl
+wget
+gpg
+python3
+tar
+gzip
+desktop-file-utils
+
+# Rider is installed best-effort from JetBrains' latest stable Linux tarball.
+# It is not pre-licensed; Rider's free tier is account-based non-commercial use.

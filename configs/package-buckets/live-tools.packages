@@ -1,0 +1,25 @@
+# Live Tools
+#
+# Rescue, diagnostics, and data-movement tools for live media.
+binutils
+dnsutils
+gddrescue
+gdisk
+gpart
+gparted
+hdparm
+iputils-ping
+lsof
+lvm2
+mdadm
+netcat-openbsd
+nmap
+nvme-cli
+parted
+rsync
+smartmontools
+strace
+tcpdump
+testdisk
+traceroute
+usbutils

@@ -1,0 +1,6 @@
+*.sh text eol=lf
+*.env text eol=lf
+*.cfg text eol=lf
+user-data text eol=lf
+meta-data text eol=lf
+

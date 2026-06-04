@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=DemChrome-Dark
+Comment=Dark graphite, chrome, and red Demuntu theme
+
+[X-GNOME-Metatheme]
+GtkTheme=DemChrome-Dark
+MetacityTheme=Default
+IconTheme=DemChrome
+CursorTheme=Adwaita

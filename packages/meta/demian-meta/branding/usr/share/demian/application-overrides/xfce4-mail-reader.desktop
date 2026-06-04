@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Mail Reader
+Exec=true
+NoDisplay=true
+OnlyShowIn=XFCE;

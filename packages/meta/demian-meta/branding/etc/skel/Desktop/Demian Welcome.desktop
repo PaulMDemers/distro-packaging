@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Demian Welcome
+Exec=demian-welcome
+Icon=distributor-logo-demian
+Terminal=false
+Categories=Settings;System;

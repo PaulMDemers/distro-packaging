@@ -1,0 +1,6 @@
+id	family	kind	profile_dir	description
+demian-server-live	debian	live	configs/debian/live-server	Demian live server ISO
+demian-desktop-live	debian	live	configs/debian/desktop-live	Demian XFCE desktop live ISO
+demian-rescue-live	debian	live	configs/debian/rescue-live	Demian rescue live ISO
+demuntu-server-autoinstall	ubuntu	autoinstall	configs/ubuntu/server-autoinstall	Demuntu Server autoinstall ISO
+demuntu-desktop-live	ubuntu	live	configs/ubuntu/desktop-live	Demuntu Desktop live ISO

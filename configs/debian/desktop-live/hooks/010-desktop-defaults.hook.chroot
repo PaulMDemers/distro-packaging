@@ -1,0 +1,114 @@
+#!/bin/sh
+set -eu
+
+if [ -d /usr/share/demian/xfce-defaults/xfce4 ]; then
+  mkdir -p /etc/xdg
+  cp -a /usr/share/demian/xfce-defaults/xfce4 /etc/xdg/
+  mkdir -p /etc/skel/.config
+  cp -a /usr/share/demian/xfce-defaults/xfce4 /etc/skel/.config/
+fi
+
+if [ -f /usr/share/backgrounds/demian/demian-default.svg ]; then
+  find /usr/share/desktop-base -path '*/wallpaper/contents/images/*.svg' -type f \
+    -exec cp /usr/share/backgrounds/demian/demian-default.svg {} \; 2>/dev/null || true
+  find /usr/share/desktop-base -path '*/lockscreen/contents/images/*.svg' -type f \
+    -exec cp /usr/share/backgrounds/demian/demian-default.svg {} \; 2>/dev/null || true
+  find /usr/share/desktop-base -path '*/login/background*.svg' -type f \
+    -exec cp /usr/share/backgrounds/demian/demian-default.svg {} \; 2>/dev/null || true
+fi
+
+if command -v plymouth-set-default-theme >/dev/null 2>&1; then
+  plymouth-set-default-theme demian-chrome || true
+fi
+
+mkdir -p /etc/skel/Desktop
+cat > /etc/motd <<'EOF'
+Welcome to Demian Desktop.
+EOF
+
+cat > /etc/systemd/system/custom-boot-marker.service <<'EOF'
+[Unit]
+Description=Demian desktop boot marker
+After=serial-getty@ttyS0.service display-manager.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/demian-desktop-ready
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+mkdir -p /usr/local/sbin
+cat > /usr/local/sbin/demian-desktop-ready <<'EOF'
+#!/bin/sh
+marker="DEMIAN_DESKTOP_READY"
+i=0
+
+while [ "$i" -lt 180 ]; do
+  live_user="$(getent passwd 1000 | cut -d: -f1)"
+  [ -n "$live_user" ] || live_user="user"
+
+  if pgrep -u "$live_user" -x xfce4-panel >/dev/null 2>&1 && \
+    pgrep -u "$live_user" -x xfdesktop >/dev/null 2>&1; then
+    if [ -x /usr/lib/demian/apply-xfce-theme ]; then
+      uid="$(id -u "$live_user" 2>/dev/null || printf 1000)"
+      home="$(getent passwd "$live_user" | cut -d: -f6)"
+      [ -n "$home" ] || home="/home/$live_user"
+      if [ -S "/run/user/$uid/bus" ]; then
+        printf "\nDEMIAN_DESKTOP_APPLY_THEME_START\n" > /dev/ttyS0
+        runuser -u "$live_user" -- env \
+          DISPLAY=:0 \
+          XAUTHORITY="$home/.Xauthority" \
+          XDG_RUNTIME_DIR="/run/user/$uid" \
+          DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$uid/bus" \
+          /usr/lib/demian/apply-xfce-theme || printf "\nDEMIAN_DESKTOP_APPLY_THEME_FAILED\n" > /dev/ttyS0
+        runuser -u "$live_user" -- env \
+          DISPLAY=:0 \
+          XAUTHORITY="$home/.Xauthority" \
+          XDG_RUNTIME_DIR="/run/user/$uid" \
+          DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$uid/bus" \
+          xfconf-query -c xsettings -p /Net/ThemeName 2>/dev/null \
+          | sed 's/^/DEMIAN_XFCE_THEME /' > /dev/ttyS0 || true
+        runuser -u "$live_user" -- env \
+          DISPLAY=:0 \
+          XAUTHORITY="$home/.Xauthority" \
+          XDG_RUNTIME_DIR="/run/user/$uid" \
+          DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$uid/bus" \
+          xfconf-query -c xfce4-panel -p /plugins/plugin-1/show-button-title 2>/dev/null \
+          | sed 's/^/DEMIAN_PANEL_TITLE /' > /dev/ttyS0 || true
+        runuser -u "$live_user" -- env \
+          DISPLAY=:0 \
+          XAUTHORITY="$home/.Xauthority" \
+          XDG_RUNTIME_DIR="/run/user/$uid" \
+          DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$uid/bus" \
+          xfconf-query -c xfce4-desktop -l -v 2>/dev/null \
+          | grep -E 'image-path|last-image|last-single-image' \
+          | sed 's/^/DEMIAN_XFCE_BACKDROP /' > /dev/ttyS0 || true
+        printf "\nDEMIAN_DESKTOP_APPLY_THEME_DONE\n" > /dev/ttyS0
+      fi
+    fi
+    printf "\n%s\n" "$marker" > /dev/ttyS0
+    exit 0
+  fi
+
+  i=$((i + 1))
+  sleep 2
+done
+
+{
+  printf "\nDEMIAN_DESKTOP_SESSION_TIMEOUT\n"
+  systemctl --no-pager --full status display-manager lightdm || true
+  ps -ef || true
+} > /dev/ttyS0
+exit 1
+EOF
+chmod 0755 /usr/local/sbin/demian-desktop-ready
+
+mkdir -p /etc/systemd/system/getty.target.wants
+ln -sf /lib/systemd/system/serial-getty@.service \
+  /etc/systemd/system/getty.target.wants/serial-getty@ttyS0.service
+
+mkdir -p /etc/systemd/system/multi-user.target.wants
+ln -sf /etc/systemd/system/custom-boot-marker.service \
+  /etc/systemd/system/multi-user.target.wants/custom-boot-marker.service

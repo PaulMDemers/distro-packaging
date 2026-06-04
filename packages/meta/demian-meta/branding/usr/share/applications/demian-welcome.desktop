@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Demian Welcome
+Comment=Demian setup and package set launcher
+Exec=demian-welcome
+Icon=distributor-logo-demian
+Terminal=false
+Categories=Settings;System;

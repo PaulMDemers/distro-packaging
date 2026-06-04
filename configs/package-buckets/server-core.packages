@@ -1,0 +1,20 @@
+# Server Core
+#
+# Lightweight baseline for server and rescue-capable images. These packages
+# should be safe defaults on every installed server.
+ca-certificates
+curl
+fail2ban
+htop
+iproute2
+less
+nano
+openssh-server
+qemu-guest-agent
+rsync
+sudo
+tmux
+ufw
+unattended-upgrades
+vim-tiny
+wget

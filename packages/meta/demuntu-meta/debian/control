@@ -1,0 +1,90 @@
+Source: demuntu-meta
+Section: metapackages
+Priority: optional
+Maintainer: Demuntu Builder <builder@demuntu.invalid>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+
+Package: demuntu-branding
+Architecture: all
+Depends:
+ python3,
+ ${misc:Depends}
+Description: identity files for Demuntu images
+ Branding data and post-install defaults used by Demuntu images.
+
+Package: demuntu-base
+Architecture: all
+Depends:
+ ca-certificates,
+ curl,
+ demuntu-branding,
+ htop,
+ iproute2,
+ less,
+ nano,
+ sudo,
+ tmux,
+ vim-tiny,
+ wget,
+ ${misc:Depends}
+Description: base package selection for Demuntu images
+ Common packages expected across Demuntu server, desktop, and live images.
+
+Package: demuntu-server
+Architecture: all
+Depends:
+ demuntu-base,
+ fail2ban,
+ openssh-server,
+ qemu-guest-agent,
+ rsync,
+ ufw,
+ unattended-upgrades,
+ ${misc:Depends}
+Description: server package selection for Demuntu images
+ Packages and defaults expected on lightweight Demuntu server images.
+
+Package: demuntu-desktop
+Architecture: all
+Depends:
+ adwaita-icon-theme,
+ alsa-utils,
+ blueman,
+ bluez,
+ dbus-x11,
+ demuntu-base,
+ firmware-sof-signed,
+ fwupd,
+ gnome-disk-utility,
+ gvfs-backends,
+ iw,
+ lightdm,
+ lightdm-gtk-greeter,
+ linux-firmware,
+ modemmanager,
+ network-manager,
+ network-manager-gnome,
+ openssh-client,
+ pavucontrol,
+ pkexec,
+ pipewire,
+ pipewire-pulse,
+ python3-tk,
+ software-properties-gtk,
+ thunar,
+ ubuntu-drivers-common,
+ udisks2,
+ upower,
+ vlc,
+ wireless-regdb,
+ vivaldi-stable,
+ wireplumber,
+ wpasupplicant,
+ xarchiver,
+ xfce4,
+ xfce4-terminal,
+ ${misc:Depends}
+Description: desktop package selection for Demuntu images
+ Packages and defaults expected on Demuntu desktop images.

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+  <defs>
+    <linearGradient id="graphite" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#111214"/>
+      <stop offset="0.42" stop-color="#2a2d31"/>
+      <stop offset="1" stop-color="#070708"/>
+    </linearGradient>
+    <linearGradient id="chrome" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6f7478"/>
+      <stop offset="0.18" stop-color="#e8edf0"/>
+      <stop offset="0.38" stop-color="#9da4a9"/>
+      <stop offset="0.62" stop-color="#f9fbfc"/>
+      <stop offset="0.82" stop-color="#767d83"/>
+      <stop offset="1" stop-color="#d7dde0"/>
+    </linearGradient>
+    <linearGradient id="redline" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5f0508"/>
+      <stop offset="0.52" stop-color="#d71920"/>
+      <stop offset="1" stop-color="#ff474d"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="26" stdDeviation="26" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+    <pattern id="mesh" width="180" height="180" patternUnits="userSpaceOnUse">
+      <path d="M0 90h180M90 0v180" stroke="#ffffff" stroke-width="2" stroke-opacity="0.035"/>
+      <path d="M0 0l180 180M180 0L0 180" stroke="#d71920" stroke-width="2" stroke-opacity="0.045"/>
+    </pattern>
+  </defs>
+  <rect width="3840" height="2160" fill="url(#graphite)"/>
+  <rect width="3840" height="2160" fill="url(#mesh)" opacity="0.9"/>
+  <path d="M-220 1560c650-310 1240-330 1770-60 506 258 1026 226 1560-96 316-190 668-276 1050-258v1014H-220z" fill="#050506" opacity="0.42"/>
+  <path d="M420 1346c372-194 720-198 1044-12 358 206 740 174 1146-96 330-220 648-278 954-174" fill="none" stroke="url(#chrome)" stroke-width="12" stroke-linecap="round" opacity="0.58"/>
+  <path d="M420 1394c372-194 720-198 1044-12 358 206 740 174 1146-96 330-220 648-278 954-174" fill="none" stroke="url(#redline)" stroke-width="6" stroke-linecap="round" opacity="0.92"/>
+</svg>

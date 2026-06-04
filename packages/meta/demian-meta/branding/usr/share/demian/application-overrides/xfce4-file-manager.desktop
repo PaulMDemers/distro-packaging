@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=File Manager
+Exec=true
+NoDisplay=true
+OnlyShowIn=XFCE;

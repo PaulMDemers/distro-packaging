@@ -1,0 +1,27 @@
+[spin]
+id = "demuntu-desktop-live"
+order = 50
+family = "ubuntu"
+kind = "live"
+profile_dir = "configs/ubuntu/desktop-live"
+description = "Demuntu Desktop live ISO"
+
+[image]
+distro_name = "demuntu-desktop-live"
+image_name = "demuntu-desktop-live"
+volume_id = "DEMUNTU_DESKTOP"
+
+[ubuntu]
+base_alias = "ubuntu-26.04-lts-desktop-amd64"
+base_iso = "dist/downloads/ubuntu-26.04-desktop-amd64.iso"
+
+[boot]
+marker = "DEMUNTU_DESKTOP_READY"
+timeout = 900
+memory = 6144
+
+[artifacts]
+serial_log = "dist/images/demuntu-desktop-live-serial.log"
+
+[packages]
+metapackages = ["demuntu-branding", "demuntu-base", "demuntu-desktop"]

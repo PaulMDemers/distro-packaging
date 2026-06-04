@@ -1,0 +1,9 @@
+# Developer
+#
+# Developer tooling is currently delivered as selectable package sets rather
+# than default spin content.
+package-set: node-developer
+package-set: python-developer
+package-set: dotnet-developer
+package-set: git-gui-tools
+package-set: docker-gui-tools

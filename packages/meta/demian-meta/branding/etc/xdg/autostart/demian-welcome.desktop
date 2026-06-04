@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Demian Welcome
+Exec=/usr/lib/demian/demian-welcome --first-run
+X-GNOME-Autostart-enabled=true

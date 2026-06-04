@@ -1,0 +1,12 @@
+branding/etc/skel etc/
+branding/etc/lightdm etc/
+branding/etc/xdg/autostart etc/xdg/
+branding/etc/xdg/xfce4 usr/share/demian/xfce-defaults/
+branding/usr/bin usr/
+branding/usr/lib/demian usr/lib/
+branding/usr/share/backgrounds/demian usr/share/backgrounds/
+branding/usr/share/demian/application-overrides usr/share/demian/
+branding/usr/share/icons/DemChrome usr/share/icons/
+branding/usr/share/applications usr/share/
+branding/usr/share/themes/DemChrome-Dark usr/share/themes/
+branding/usr/share/plymouth/themes/demian-chrome usr/share/plymouth/themes/

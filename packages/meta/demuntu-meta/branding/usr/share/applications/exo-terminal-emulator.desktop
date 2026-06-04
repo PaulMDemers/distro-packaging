@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Terminal Emulator
+Exec=exo-open --launch TerminalEmulator
+NoDisplay=true
+OnlyShowIn=XFCE;

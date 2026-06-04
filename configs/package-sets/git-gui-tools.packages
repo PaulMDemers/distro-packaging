@@ -1,0 +1,15 @@
+# Demian/Demuntu package set: git-gui-tools
+#
+# Package-managed baseline:
+git
+git-cola
+git-gui
+gitk
+meld
+xdg-utils
+ca-certificates
+curl
+wget
+
+# GitKraken is installed best-effort from the official Linux amd64 .deb.
+# It is proprietary and may require a GitKraken account/license depending on use.

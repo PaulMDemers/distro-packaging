@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Web Browser
+Exec=exo-open --launch WebBrowser
+NoDisplay=true
+OnlyShowIn=XFCE;

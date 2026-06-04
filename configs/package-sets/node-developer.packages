@@ -1,0 +1,20 @@
+# Demuntu package set: node-developer
+#
+# Functional package requests:
+nodejs
+npm
+vscode
+git
+build-essential
+docker-ce
+#
+# Concrete apt packages installed:
+nodejs
+code
+git
+build-essential
+docker-ce
+docker-ce-cli
+containerd.io
+docker-buildx-plugin
+docker-compose-plugin

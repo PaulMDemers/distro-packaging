@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Terminal Emulator
+Exec=true
+NoDisplay=true
+OnlyShowIn=XFCE;

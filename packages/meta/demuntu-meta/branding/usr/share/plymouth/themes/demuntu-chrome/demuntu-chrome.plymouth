@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Demuntu Chrome
+Description=Red and silver Demuntu boot splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/demuntu-chrome
+ScriptFile=/usr/share/plymouth/themes/demuntu-chrome/demuntu-chrome.script

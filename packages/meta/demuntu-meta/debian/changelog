@@ -1,0 +1,5 @@
+demuntu-meta (0.1.0-1) unstable; urgency=medium
+
+  * Initial metapackages and branding for Demuntu profiles.
+
+ -- Demuntu Builder <builder@demuntu.invalid>  Fri, 29 May 2026 20:00:00 -0400

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Demuntu Welcome
+Comment=Demuntu setup and package set launcher
+Exec=demuntu-welcome
+Icon=distributor-logo-demuntu
+Terminal=false
+Categories=Settings;System;

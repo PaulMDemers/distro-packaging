@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ -d /usr/share/demuntu/xfce-defaults/xfce4 ]; then
+  mkdir -p /etc/xdg
+  cp -a /usr/share/demuntu/xfce-defaults/xfce4 /etc/xdg/
+  mkdir -p /etc/skel/.config
+  cp -a /usr/share/demuntu/xfce-defaults/xfce4 /etc/skel/.config/
+fi
+
+if command -v plymouth-set-default-theme >/dev/null 2>&1; then
+  plymouth-set-default-theme demuntu-chrome || true
+fi
+
+mkdir -p /usr/local/sbin
+cat > /usr/local/sbin/demuntu-desktop-ready <<'EOF'
+#!/bin/sh
+marker="DEMUNTU_DESKTOP_READY"
+i=0
+
+while [ "$i" -lt 180 ]; do
+  live_user="$(getent passwd 1000 | cut -d: -f1)"
+  [ -n "$live_user" ] || live_user="ubuntu"
+
+  if pgrep -u "$live_user" -x xfce4-panel >/dev/null 2>&1 && \
+    pgrep -u "$live_user" -x xfdesktop >/dev/null 2>&1; then
+    if [ -x /usr/lib/demuntu/apply-xfce-theme ]; then
+      uid="$(id -u "$live_user" 2>/dev/null || printf 1000)"
+      home="$(getent passwd "$live_user" | cut -d: -f6)"
+      [ -n "$home" ] || home="/home/$live_user"
+      if [ -S "/run/user/$uid/bus" ]; then
+        printf "\nDEMUNTU_DESKTOP_APPLY_THEME_START\n" > /dev/ttyS0
+        runuser -u "$live_user" -- env \
+          DISPLAY=:0 \
+          XAUTHORITY="$home/.Xauthority" \
+          XDG_RUNTIME_DIR="/run/user/$uid" \
+          DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$uid/bus" \
+          /usr/lib/demuntu/apply-xfce-theme || printf "\nDEMUNTU_DESKTOP_APPLY_THEME_FAILED\n" > /dev/ttyS0
+        runuser -u "$live_user" -- env \
+          DISPLAY=:0 \
+          XAUTHORITY="$home/.Xauthority" \
+          XDG_RUNTIME_DIR="/run/user/$uid" \
+          DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$uid/bus" \
+          xfconf-query -c xsettings -p /Net/ThemeName 2>/dev/null \
+          | sed 's/^/DEMUNTU_XFCE_THEME /' > /dev/ttyS0 || true
+        runuser -u "$live_user" -- env \
+          DISPLAY=:0 \
+          XAUTHORITY="$home/.Xauthority" \
+          XDG_RUNTIME_DIR="/run/user/$uid" \
+          DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$uid/bus" \
+          xfconf-query -c xfce4-panel -p /plugins/plugin-1/show-button-title 2>/dev/null \
+          | sed 's/^/DEMUNTU_PANEL_TITLE /' > /dev/ttyS0 || true
+        printf "\nDEMUNTU_DESKTOP_APPLY_THEME_DONE\n" > /dev/ttyS0
+      fi
+    fi
+    printf "\n%s\n" "$marker" > /dev/ttyS0
+    exit 0
+  fi
+
+  i=$((i + 1))
+  sleep 2
+done
+
+{
+  printf "\nDEMUNTU_DESKTOP_SESSION_TIMEOUT\n"
+  systemctl --no-pager --full status display-manager lightdm || true
+  ps -ef || true
+} > /dev/ttyS0
+exit 1
+EOF
+chmod 0755 /usr/local/sbin/demuntu-desktop-ready
+
+cat > /etc/systemd/system/demuntu-desktop-marker.service <<'EOF'
+[Unit]
+Description=Demuntu desktop live boot marker
+After=graphical.target display-manager.service serial-getty@ttyS0.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/demuntu-desktop-ready
+
+[Install]
+WantedBy=graphical.target
+EOF
+
+systemctl enable demuntu-desktop-marker.service
+systemctl enable serial-getty@ttyS0.service
+
+mkdir -p /etc/lightdm/lightdm.conf.d
+cat > /etc/lightdm/lightdm.conf.d/50-demuntu-autologin.conf <<'EOF'
+[Seat:*]
+autologin-user=ubuntu
+autologin-user-timeout=0
+user-session=xfce
+greeter-session=lightdm-gtk-greeter
+EOF
+
+printf '%s\n' /usr/sbin/lightdm > /etc/X11/default-display-manager
+rm -f /etc/systemd/system/display-manager.service
+ln -s /usr/lib/systemd/system/lightdm.service /etc/systemd/system/display-manager.service
+mkdir -p /etc/systemd/system/graphical.target.wants
+ln -sfn /etc/systemd/system/display-manager.service \
+  /etc/systemd/system/graphical.target.wants/display-manager.service
+systemctl disable gdm3.service gdm.service || true
+
+rm -f /var/crash/* || true
+if [ -f /etc/default/apport ]; then
+  sed -i 's/^enabled=.*/enabled=0/' /etc/default/apport
+fi
+systemctl disable \
+  apport.service \
+  apport-autoreport.path \
+  apport-autoreport.timer \
+  whoopsie.path || true

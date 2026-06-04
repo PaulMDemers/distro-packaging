@@ -1,0 +1,35 @@
+[spin]
+id = "demuntu-server-autoinstall"
+order = 40
+family = "ubuntu"
+kind = "autoinstall"
+profile_dir = "configs/ubuntu/server-autoinstall"
+description = "Demuntu Server autoinstall ISO"
+
+[image]
+distro_name = "demuntu-server"
+image_name = "demuntu-server-autoinstall"
+volume_id = "DEMUNTU_SERVER"
+
+[ubuntu]
+base_alias = "ubuntu-26.04-lts-live-server-amd64"
+base_iso = "dist/downloads/ubuntu-26.04-live-server-amd64.iso"
+
+[boot]
+marker = "DEMUNTU_INSTALL_READY"
+memory = 4096
+
+[artifacts]
+screenshot = "dist/images/demuntu-server-autoinstall-qemu.ppm"
+serial_log = "dist/images/demuntu-server-autoinstall-install-serial.log"
+
+[install]
+disk = "build/test/demuntu-server-autoinstall.qcow2"
+cpus = 1
+timeout = 3300
+complete_marker = "reboot: Power down"
+boot_timeout = 300
+boot_serial_log = "dist/images/demuntu-server-installed-boot-serial.log"
+
+[packages]
+metapackages = ["demuntu-branding", "demuntu-base", "demuntu-server"]

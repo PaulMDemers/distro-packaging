@@ -1,0 +1,124 @@
+Source: demian-meta
+Section: metapackages
+Priority: optional
+Maintainer: Demian Builder <builder@demian.invalid>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+
+Package: demian-branding
+Architecture: all
+Depends:
+ python3,
+ ${misc:Depends}
+Description: identity files for Demian images
+ Branding data and post-install defaults used by Demian live images.
+
+Package: demian-base
+Architecture: all
+Depends:
+ ca-certificates,
+ curl,
+ demian-branding,
+ htop,
+ iproute2,
+ less,
+ nano,
+ sudo,
+ tmux,
+ vim-tiny,
+ wget,
+ ${misc:Depends}
+Description: base package selection for Demian images
+ Common packages expected across Demian server, desktop, and live images.
+
+Package: demian-server
+Architecture: all
+Depends:
+ demian-base,
+ fail2ban,
+ openssh-server,
+ qemu-guest-agent,
+ rsync,
+ ufw,
+ unattended-upgrades,
+ ${misc:Depends}
+Description: server package selection for Demian images
+ Packages and defaults expected on lightweight server images.
+
+Package: demian-desktop
+Architecture: all
+Depends:
+ adwaita-icon-theme,
+ alsa-utils,
+ blueman,
+ bluez,
+ dbus-x11,
+ demian-base,
+ firmware-atheros,
+ firmware-brcm80211,
+ firmware-iwlwifi,
+ firmware-linux,
+ firmware-misc-nonfree,
+ firmware-realtek,
+ firmware-sof-signed,
+ fonts-dejavu,
+ firefox-esr | firefox,
+ fwupd,
+ gnome-disk-utility,
+ gvfs-backends,
+ iw,
+ lightdm,
+ lightdm-gtk-greeter,
+ modemmanager,
+ network-manager,
+ network-manager-gnome,
+ openssh-client,
+ pavucontrol,
+ pkexec,
+ pipewire,
+ pipewire-pulse,
+ python3-tk,
+ task-xfce-desktop,
+ thunar,
+ udisks2,
+ upower,
+ wireless-regdb,
+ wireplumber,
+ wpasupplicant,
+ xarchiver,
+ xfce4-terminal,
+ ${misc:Depends}
+Description: desktop package selection for Demian images
+ Packages and defaults expected on Demian desktop images.
+
+Package: demian-rescue
+Architecture: all
+Depends:
+ demian-base,
+ binutils,
+ dnsutils,
+ gddrescue,
+ gdisk,
+ gpart,
+ gparted,
+ hdparm,
+ iputils-ping,
+ lsof,
+ lvm2,
+ mdadm,
+ netcat-openbsd,
+ nmap,
+ nvme-cli,
+ openssh-client,
+ parted,
+ rsync,
+ smartmontools,
+ strace,
+ tcpdump,
+ testdisk,
+ traceroute,
+ usbutils,
+ ${misc:Depends}
+Description: rescue package selection for Demian images
+ Packages and defaults expected on rescue live images.

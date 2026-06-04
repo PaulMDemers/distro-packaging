@@ -1,0 +1,6 @@
+# id	name	summary
+node-developer	Node Developer	Node.js/npm, VS Code, Git, build tools, and Docker CE
+python-developer	Python Developer	Python 3, pip, venv, pipx, Git, build tools, SQLite, jq, and direnv
+dotnet-developer	.NET Developer	.NET 10 SDK, ASP.NET Core runtime, Git, build tools, and JetBrains Rider best-effort install
+git-gui-tools	Git GUI Tools	Git Cola, git-gui, gitk, Meld, and GitKraken best-effort install
+docker-gui-tools	Docker GUI Tools	Docker Engine, lazydocker, and Portainer CE local web UI service

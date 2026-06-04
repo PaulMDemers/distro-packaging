@@ -1,0 +1,26 @@
+[Icon Theme]
+Name=DemChrome
+Comment=Red and silver chrome identity icons for Demuntu and Demian
+Inherits=Adwaita,hicolor
+Directories=scalable/apps,scalable/places,scalable/devices
+
+[scalable/apps]
+Size=64
+Type=Scalable
+MinSize=16
+MaxSize=256
+Context=Applications
+
+[scalable/places]
+Size=64
+Type=Scalable
+MinSize=16
+MaxSize=256
+Context=Places
+
+[scalable/devices]
+Size=64
+Type=Scalable
+MinSize=16
+MaxSize=256
+Context=Devices

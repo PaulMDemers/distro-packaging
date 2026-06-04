@@ -1,0 +1,19 @@
+# Desktop Core
+#
+# Lightweight XFCE workstation baseline. Family-specific metapackages can use
+# task-xfce-desktop or xfce4 depending on the base distro.
+adwaita-icon-theme
+dbus-x11
+lightdm
+lightdm-gtk-greeter
+network-manager
+openssh-client
+pavucontrol
+pkexec
+pipewire
+python3-tk
+thunar
+vivaldi-stable
+vlc
+xarchiver
+xfce4-terminal

@@ -1,0 +1,14 @@
+# Packages from the upstream Ubuntu desktop squashfs that Demuntu strips from
+# its lightweight desktop spin before adding replacement defaults.
+libreoffice*
+firefox
+thunderbird
+rhythmbox
+rhythmbox-data
+rhythmbox-plugins
+totem
+totem-common
+transmission-common
+transmission-gtk
+shotwell
+shotwell-common

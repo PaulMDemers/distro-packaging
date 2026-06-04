@@ -1,0 +1,29 @@
+[spin]
+id = "demian-server-live"
+order = 10
+family = "debian"
+kind = "live"
+profile_dir = "configs/debian/live-server"
+description = "Demian live server ISO"
+
+[image]
+distro_name = "demian-server-live"
+image_name = "demian-server-live"
+architecture = "amd64"
+
+[debian]
+release = "trixie"
+archive_areas = "main contrib non-free-firmware"
+mirror_bootstrap = "http://deb.debian.org/debian/"
+mirror_chroot_security = "http://security.debian.org/debian-security/"
+bootappend_live = "components console=tty0 console=ttyS0,115200n8 systemd.show_status=1"
+boot_timeout_tenths = 30
+serial_console = true
+
+[boot]
+marker = "DEMIAN_SERVER_READY"
+timeout = 480
+memory = 2048
+
+[packages]
+metapackages = ["demian-branding", "demian-base", "demian-server"]

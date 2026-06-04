@@ -1,0 +1,34 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
+  identity:
+    hostname: demuntu
+    username: ubuntu
+    # Password is "ubuntu". Replace before using outside disposable test VMs.
+    password: "$6$rounds=4096$wGQ5qPv8VAULFSP3$01G8ZzSDXUhIxhu9wHkVjtJXHMTtF0WrAq9o2BUhkd7lnmlKletmfrU.EM5W6GYzXl83Jt9uBFgdv0P0eCUmh/"
+  ssh:
+    install-server: true
+    allow-pw: true
+  packages:
+    - curl
+    - htop
+    - tmux
+    - vim
+  storage:
+    layout:
+      name: direct
+  shutdown: poweroff
+  late-commands:
+    - mkdir -p /target/tmp/demuntu-packages
+    - cp /cdrom/demuntu/packages/*.deb /target/tmp/demuntu-packages/
+    - curtin in-target --target=/target -- apt-get update
+    - curtin in-target --target=/target -- /bin/sh -c 'apt-get install -y /tmp/demuntu-packages/*.deb'
+    - rm -rf /target/tmp/demuntu-packages
+    - /bin/sh -c 'if [ -x /cdrom/demuntu/package-sets/install-from-cmdline.sh ]; then /cdrom/demuntu/package-sets/install-from-cmdline.sh /target; fi'
+    - curtin in-target --target=/target -- systemctl enable ssh
+    - curtin in-target --target=/target -- systemctl enable serial-getty@ttyS0.service
+    - printf '%s\n' '[Unit]' 'Description=Demuntu installed-system boot marker' 'After=serial-getty@ttyS0.service' '' '[Service]' 'Type=oneshot' 'ExecStart=/bin/sh -c '"'"'printf "\nDEMUNTU_INSTALL_READY\n" > /dev/ttyS0'"'" '' '[Install]' 'WantedBy=multi-user.target' > /target/etc/systemd/system/demuntu-boot-marker.service
+    - curtin in-target --target=/target -- systemctl enable demuntu-boot-marker.service
