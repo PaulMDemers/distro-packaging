@@ -151,6 +151,20 @@ The manifest is written to `dist/manifest.json` and records each profile's ISO,
 checksum, size, base ISO alias, serial-marker test status, and local repository
 inventory.
 
+Sync product-layer repositories after changing distro-specific files:
+
+```sh
+./scripts/products/export-demuntu.sh ../Demuntu
+./scripts/products/export-demian.sh ../Demian
+./scripts/products/import-product.sh demuntu ../Demuntu
+./scripts/products/import-product.sh demian ../Demian
+```
+
+The export scripts copy product-owned configs, spin declarations, boot assets,
+and metapackage sources from this packaging workspace into the matching product
+repo while preserving relative paths. The import script copies those same
+product-owned paths back into the packaging workspace.
+
 Cleanup targets:
 
 ```sh
