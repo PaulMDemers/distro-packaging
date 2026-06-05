@@ -9,6 +9,8 @@ branding/usr/share/demuntu/application-overrides usr/share/demuntu/
 branding/usr/share/icons/DemChrome usr/share/icons/
 branding/usr/share/icons/DemSunset usr/share/icons/
 branding/usr/share/applications usr/share/
+branding/usr/share/glib-2.0/schemas/60_demuntu-mate.gschema.override usr/share/glib-2.0/schemas/
+branding/usr/share/mate-panel/layouts/demuntu.layout usr/share/mate-panel/layouts/
 branding/usr/share/themes/DemChrome-Dark usr/share/themes/
 branding/usr/share/themes/DemSunset-Dark usr/share/themes/
 branding/usr/share/plymouth/themes/demuntu-chrome usr/share/plymouth/themes/

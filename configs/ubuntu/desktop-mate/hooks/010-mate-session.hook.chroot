@@ -45,7 +45,7 @@ Type=Application
 Name=Demuntu Compiz
 Exec=/usr/local/bin/demuntu-compiz-start
 OnlyShowIn=MATE;
-X-MATE-Autostart-enabled=true
+X-MATE-Autostart-enabled=false
 NoDisplay=true
 EOF
 
@@ -56,6 +56,10 @@ if [ -x /usr/lib/demuntu/apply-mate-theme ]; then
   mkdir -p /etc/skel/.config/autostart
   cp /etc/xdg/autostart/demsunset-mate-theme.desktop \
     /etc/skel/.config/autostart/demsunset-mate-theme.desktop 2>/dev/null || true
+fi
+
+if command -v glib-compile-schemas >/dev/null 2>&1; then
+  glib-compile-schemas /usr/share/glib-2.0/schemas || true
 fi
 
 rm -f /var/crash/* || true

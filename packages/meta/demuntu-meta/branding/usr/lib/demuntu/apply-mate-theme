@@ -39,15 +39,11 @@ set_gsettings org.mate.background primary-color "'#1b1c22'"
 set_gsettings org.mate.background secondary-color "'#ef7d35'"
 set_gsettings org.mate.background color-shading-type "'vertical-gradient'"
 
-for top in top bottom panel0 panel-0 panel_0; do
+for top in top bottom; do
   path="/org/mate/panel/toplevels/$top/"
   gsettings set "org.mate.panel.toplevel:$path" background-type "'color'" >/dev/null 2>&1 || true
   gsettings set "org.mate.panel.toplevel:$path" background-color "'#34343a'" >/dev/null 2>&1 || true
 done
-
-if command -v mate-panel >/dev/null 2>&1 && pgrep -u "$(id -u)" -x mate-panel >/dev/null 2>&1; then
-  mate-panel --replace >/dev/null 2>&1 &
-fi
 
 desktop_dir="$HOME/Desktop"
 if [ -d "$desktop_dir" ]; then

@@ -44,7 +44,7 @@ remaining upstream Thunderbird/snap state from the live layer stack.
 
 ```text
 ISO:    dist/images/demuntu-desktop-mate-live.iso
-SHA256: cdbe2787a7a59acff1bf1b435417088a6a455eaef2242dd83356e05d8a2e0157
+SHA256: 6fca8fd7e644992efa220d793b05f70cc7fd54c6a22f61105f6917147a904860
 Marker: DEMUNTU_MATE_DESKTOP_READY
 ```
 
@@ -90,9 +90,18 @@ Wallpaper: /usr/share/backgrounds/demuntu/demuntu-default.png
 GTK/Marco theme: DemSunset-Dark
 Icon theme: DemSunset
 Plymouth theme: demuntu-sunset
+Panel layout: /usr/share/mate-panel/layouts/demuntu.layout
+Schema override: /usr/share/glib-2.0/schemas/60_demuntu-mate.gschema.override
 MATE runtime helper: /usr/lib/demuntu/apply-mate-theme
 Compiz defaults: /etc/skel/.config/compiz-1/compizconfig/Default.ini
 ```
+
+Demuntu MATE uses its own panel layout instead of Ubuntu MATE's `familiar`
+layout. The upstream layout references Brisk Menu, snap Firefox, Evolution, and
+indicator applets, which are intentionally absent from Demuntu's trimmed package
+set and can trigger repeated panel error dialogs. Compiz remains installed and
+configured, but it is no longer enabled as an automatic first-login replacement
+until the base MATE session is stable.
 
 ## Next Work
 
