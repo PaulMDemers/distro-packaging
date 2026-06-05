@@ -26,6 +26,92 @@ set_gsettings() {
   fi
 }
 
+set_relocatable() {
+  schema="$1"
+  path="$2"
+  key="$3"
+  value="$4"
+  gsettings set "$schema:$path" "$key" "$value" >/dev/null 2>&1 || true
+}
+
+panel_ids_empty() {
+  ids="$(gsettings get org.mate.panel toplevel-id-list 2>/dev/null || printf '[]')"
+  [ "$ids" = "[]" ] || [ "$ids" = "@as []" ]
+}
+
+seed_mate_panels() {
+  panel_ids_empty || return 0
+
+  echo "Seeding Demuntu MATE panel layout"
+  gsettings set org.mate.panel default-layout "'demuntu'" >/dev/null 2>&1 || true
+
+  if command -v mate-panel >/dev/null 2>&1; then
+    mate-panel --reset --layout demuntu >/dev/null 2>&1 || \
+      mate-panel --reset >/dev/null 2>&1 || true
+    sleep 2
+  fi
+
+  panel_ids_empty || return 0
+
+  echo "Falling back to manual Demuntu MATE panel seed"
+  gsettings set org.mate.panel toplevel-id-list "['top','bottom']" >/dev/null 2>&1 || true
+  gsettings set org.mate.panel object-id-list "['menu-bar','notification-area','clock','show-desktop','window-list','workspace-switcher']" >/dev/null 2>&1 || true
+
+  set_relocatable org.mate.panel.toplevel /org/mate/panel/toplevels/top/ name "'Top Panel'"
+  set_relocatable org.mate.panel.toplevel /org/mate/panel/toplevels/top/ orientation "'top'"
+  set_relocatable org.mate.panel.toplevel /org/mate/panel/toplevels/top/ expand true
+  set_relocatable org.mate.panel.toplevel /org/mate/panel/toplevels/top/ size 28
+
+  set_relocatable org.mate.panel.toplevel /org/mate/panel/toplevels/bottom/ name "'Bottom Panel'"
+  set_relocatable org.mate.panel.toplevel /org/mate/panel/toplevels/bottom/ orientation "'bottom'"
+  set_relocatable org.mate.panel.toplevel /org/mate/panel/toplevels/bottom/ expand true
+  set_relocatable org.mate.panel.toplevel /org/mate/panel/toplevels/bottom/ size 28
+
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/menu-bar/ object-type "'menu-bar'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/menu-bar/ toplevel-id "'top'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/menu-bar/ position 0
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/menu-bar/ locked true
+
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/notification-area/ object-type "'applet'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/notification-area/ applet-iid "'NotificationAreaAppletFactory::NotificationArea'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/notification-area/ toplevel-id "'top'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/notification-area/ position 10
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/notification-area/ relative-to-edge "'end'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/notification-area/ locked true
+
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/clock/ object-type "'applet'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/clock/ applet-iid "'ClockAppletFactory::ClockApplet'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/clock/ toplevel-id "'top'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/clock/ position 0
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/clock/ relative-to-edge "'end'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/clock/ locked true
+
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/show-desktop/ object-type "'applet'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/show-desktop/ applet-iid "'WnckletFactory::ShowDesktopApplet'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/show-desktop/ toplevel-id "'bottom'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/show-desktop/ position 0
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/show-desktop/ locked true
+
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/window-list/ object-type "'applet'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/window-list/ applet-iid "'WnckletFactory::WindowListApplet'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/window-list/ toplevel-id "'bottom'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/window-list/ position 20
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/window-list/ locked true
+
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/workspace-switcher/ object-type "'applet'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/workspace-switcher/ applet-iid "'WnckletFactory::WorkspaceSwitcherApplet'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/workspace-switcher/ toplevel-id "'bottom'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/workspace-switcher/ position 0
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/workspace-switcher/ relative-to-edge "'end'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/workspace-switcher/ locked true
+
+  if command -v mate-panel >/dev/null 2>&1; then
+    mate-panel --replace >/dev/null 2>&1 &
+  fi
+}
+
+seed_mate_panels
+
 set_gsettings org.mate.interface gtk-theme "'$gtk_theme'"
 set_gsettings org.mate.interface icon-theme "'$icon_theme'"
 set_gsettings org.mate.interface cursor-theme "'Adwaita'"
@@ -41,8 +127,9 @@ set_gsettings org.mate.background color-shading-type "'vertical-gradient'"
 
 for top in top bottom; do
   path="/org/mate/panel/toplevels/$top/"
-  gsettings set "org.mate.panel.toplevel:$path" background-type "'color'" >/dev/null 2>&1 || true
-  gsettings set "org.mate.panel.toplevel:$path" background-color "'#34343a'" >/dev/null 2>&1 || true
+  gsettings set "org.mate.panel.toplevel.background:${path}background/" type "'color'" >/dev/null 2>&1 || true
+  gsettings set "org.mate.panel.toplevel.background:${path}background/" color "'#34343a'" >/dev/null 2>&1 || true
+  gsettings set "org.mate.panel.toplevel.background:${path}background/" opacity 65535 >/dev/null 2>&1 || true
 done
 
 desktop_dir="$HOME/Desktop"

@@ -44,7 +44,7 @@ remaining upstream Thunderbird/snap state from the live layer stack.
 
 ```text
 ISO:    dist/images/demuntu-desktop-mate-live.iso
-SHA256: 6fca8fd7e644992efa220d793b05f70cc7fd54c6a22f61105f6917147a904860
+SHA256: 6aee51b44b0e06b9733b345973e160199f19bc8459ebcd06a7bde546944768f8
 Marker: DEMUNTU_MATE_DESKTOP_READY
 ```
 
@@ -103,11 +103,18 @@ set and can trigger repeated panel error dialogs. Compiz remains installed and
 configured, but it is no longer enabled as an automatic first-login replacement
 until the base MATE session is stable.
 
+The MATE runtime helper also seeds panel state at first login when
+`org.mate.panel toplevel-id-list` is empty. It first asks `mate-panel` to reset
+against the Demuntu layout, then falls back to explicit gsettings for top and
+bottom panels with safe stock applets.
+
 ## Next Work
 
 1. Boot the MATE ISO visibly in QEMU.
-2. Verify whether Compiz starts reliably on the live image under QEMU and on
+2. Verify that Demuntu's top and bottom MATE panels appear without panel error
+   dialogs.
+3. Verify whether Compiz starts reliably on the live image under QEMU and on
    real hardware.
-3. Tune Compiz defaults for cube/expo behavior against QEMU and hardware.
-4. Move XFCE-specific branding scripts into legacy/prototype paths or replace
+4. Tune Compiz defaults for cube/expo behavior against QEMU and hardware.
+5. Move XFCE-specific branding scripts into legacy/prototype paths or replace
    them with MATE-aware equivalents.
