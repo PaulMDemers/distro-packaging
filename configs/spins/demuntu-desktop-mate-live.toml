@@ -30,4 +30,4 @@ theme_apply = ""
 serial_log = "dist/images/demuntu-desktop-mate-live-serial.log"
 
 [packages]
-metapackages = ["demuntu-branding", "demuntu-base", "demuntu-desktop"]
+metapackages = ["demuntu-branding", "demuntu-base", "demuntu-mate-desktop"]

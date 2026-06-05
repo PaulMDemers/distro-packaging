@@ -33,8 +33,27 @@ make demuntu-desktop-mate-live
 make demuntu-desktop-mate-live-test
 ```
 
-The first boot marker target is `DEMUNTU_MATE_DESKTOP_READY`, emitted after the
-live session starts `mate-panel` and `caja`.
+The boot marker target is `DEMUNTU_MATE_DESKTOP_READY`, emitted after the live
+session starts `mate-panel` and `caja`.
+
+## First Build
+
+The first validated MATE release-line ISO was built and boot-tested on
+June 5, 2026.
+
+```text
+ISO:    dist/images/demuntu-desktop-mate-live.iso
+SHA256: f2e51bcd184b246cf0fb52a225e35bef72e02ddd7ef61727f1d066ea71e8c99b
+Marker: DEMUNTU_MATE_DESKTOP_READY
+```
+
+Audit notes:
+
+- `demuntu-mate-desktop`, `mate-panel`, `caja`, `compiz`, and `compiz-mate`
+  are installed in the live rootfs.
+- `demuntu-desktop`, `xfce4`, `xfce4-panel`, `xfdesktop`, `thunar`, and
+  `libreoffice-common` are absent from the MATE live rootfs.
+- The live serial log confirms `DEMUNTU_DESKTOP_SESSION mate`.
 
 ## Desktop Stack
 
@@ -59,17 +78,16 @@ fusion-icon
 
 ## Next Work
 
-1. Build the first `demuntu-desktop-mate-live.iso`.
-2. Boot it headless and visibly in QEMU.
-3. Verify whether Compiz starts reliably on the live image under QEMU and on
+1. Boot the MATE ISO visibly in QEMU.
+2. Verify whether Compiz starts reliably on the live image under QEMU and on
    real hardware.
-4. Add the sunset theme package assets:
+3. Add the sunset theme package assets:
    - wallpaper
    - Plymouth splash
    - GRUB background
    - LightDM greeter config
    - MATE GTK theme
    - icon recolors
-5. Add Compiz defaults for cube/expo behavior with a clean fallback path.
-6. Move XFCE-specific branding scripts into legacy/prototype paths or replace
+4. Add Compiz defaults for cube/expo behavior with a clean fallback path.
+5. Move XFCE-specific branding scripts into legacy/prototype paths or replace
    them with MATE-aware equivalents.

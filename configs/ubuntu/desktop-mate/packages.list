@@ -39,6 +39,8 @@ vivaldi-stable
 
 # MATE desktop target.
 mate-desktop-environment-core
+mate-menus
+mate-panel
 mate-applets
 mate-control-center
 mate-notification-daemon

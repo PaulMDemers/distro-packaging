@@ -45,7 +45,7 @@ done
 : "${DESKTOP_SESSION:=xfce}"
 : "${DESKTOP_PANEL_PROCESS:=xfce4-panel}"
 : "${DESKTOP_DESKTOP_PROCESS:=xfdesktop}"
-: "${DESKTOP_THEME_APPLY:=/usr/lib/demuntu/apply-xfce-theme}"
+: "${DESKTOP_THEME_APPLY=/usr/lib/demuntu/apply-xfce-theme}"
 
 repo_root="$(pwd)"
 build_root="${BUILD_ROOT:-$repo_root/build}"
@@ -396,6 +396,8 @@ disable_snap_seed_wait() {
 
   mkdir -p "$target_root/etc/systemd/system"
   ln -sfn /dev/null "$target_root/etc/systemd/system/snapd.seeded.service"
+  ln -sfn /dev/null "$target_root/etc/systemd/system/snapd.service"
+  ln -sfn /dev/null "$target_root/etc/systemd/system/snapd.socket"
 }
 
 write_marker_service() {
