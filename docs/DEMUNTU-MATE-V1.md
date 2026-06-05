@@ -40,11 +40,12 @@ session starts `mate-panel` and `caja`.
 
 The current validated MATE release-line ISO was built and boot-tested on
 June 5, 2026. It includes the clean auxiliary-layer pass that strips the
-remaining upstream Thunderbird/snap state from the live layer stack.
+remaining upstream Thunderbird/snap state from the live layer stack, and it
+restores the DemSunset GTK CSS to the last known wallpaper-safe selector set.
 
 ```text
 ISO:    dist/images/demuntu-desktop-mate-live.iso
-SHA256: 093b3406efc0d5780f18d99ac874d8175e58f350e049ef4fd5334e5056b04baa
+SHA256: 5f81a48583f1995d8469705be3aefce8b5f02c29b23063115c26e7b24593989e
 Marker: DEMUNTU_MATE_DESKTOP_READY
 ```
 

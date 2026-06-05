@@ -20,66 +20,12 @@
   caret-color: @dem_pink;
 }
 
+window,
 dialog,
 popover,
-menu {
+menu,
+.background {
   background-color: @dem_bg;
-  color: @dem_fg;
-}
-
-/* MATE Control Center and several older GTK3 tools use explicit views,
-   frames, and viewport widgets that otherwise fall back to a light base. */
-dialog.background,
-viewport,
-scrolledwindow,
-frame,
-frame > border,
-.view,
-.rubberband,
-notebook,
-notebook > stack,
-list,
-row {
-  background-color: @dem_bg;
-  color: @dem_fg;
-}
-
-/* Caja's desktop is a GtkIconView over the wallpaper. Keep generic icon views
-   transparent so desktop icons do not paint a solid sheet over the background. */
-iconview,
-iconview.view {
-  background-color: transparent;
-  color: @dem_fg;
-}
-
-window.caja-desktop-window,
-window.caja-desktop-window.background,
-.caja-desktop-window,
-.caja-desktop-window.background,
-window.desktop-window,
-window.desktop-window.background,
-.desktop-window,
-.desktop-window.background {
-  background-color: transparent;
-  background-image: none;
-}
-
-/* MATE Control Center exposes its launcher grid as a named icon view in many
-   builds; this keeps that specific view dark without clobbering Caja desktop. */
-iconview#main-icon-view,
-iconview#search-results-view,
-.mate-control-center iconview,
-.control-center iconview {
-  background-color: @dem_bg;
-  color: @dem_fg;
-}
-
-iconview text,
-iconview cell,
-.view text,
-.view cell,
-label,
-row label {
   color: @dem_fg;
 }
 
@@ -136,9 +82,7 @@ entry,
 combobox,
 spinbutton,
 textview,
-textview text,
 treeview,
-treeview.view,
 list,
 sidebar,
 notebook stack {
@@ -176,16 +120,6 @@ button.suggested-action {
 
 selection,
 *:selected {
-  background-color: @dem_orange;
-  color: @dem_fg;
-}
-
-iconview:selected,
-iconview:selected:focus,
-iconview cell:selected,
-treeview.view:selected,
-treeview.view:selected:focus,
-row:selected {
   background-color: @dem_orange;
   color: @dem_fg;
 }
