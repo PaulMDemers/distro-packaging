@@ -24,7 +24,7 @@ memory = 6144
 session = "mate"
 panel_process = "mate-panel"
 desktop_process = "caja"
-theme_apply = ""
+theme_apply = "/usr/lib/demuntu/apply-mate-theme"
 
 [artifacts]
 serial_log = "dist/images/demuntu-desktop-mate-live-serial.log"

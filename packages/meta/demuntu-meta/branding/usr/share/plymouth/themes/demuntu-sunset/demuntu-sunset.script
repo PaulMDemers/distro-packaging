@@ -1,0 +1,38 @@
+background = Image("splash.png");
+logo = Image("logo.png");
+
+window_width = Window.GetWidth();
+window_height = Window.GetHeight();
+image_ratio = background.GetWidth() / background.GetHeight();
+window_ratio = window_width / window_height;
+
+if (window_ratio > image_ratio)
+  scale = window_width / background.GetWidth();
+else
+  scale = window_height / background.GetHeight();
+
+scaled_background = background.Scale(background.GetWidth() * scale, background.GetHeight() * scale);
+background_sprite = Sprite(scaled_background);
+background_sprite.SetPosition(
+  Window.GetX() + window_width / 2 - scaled_background.GetWidth() / 2,
+  Window.GetY() + window_height / 2 - scaled_background.GetHeight() / 2,
+  -10000
+);
+
+logo_sprite = Sprite(logo);
+logo_sprite.SetPosition(
+  Window.GetX() + window_width / 2 - logo.GetWidth() / 2,
+  Window.GetY() + window_height / 2 - logo.GetHeight() / 2,
+  10
+);
+
+title_image = Image.Text("Demuntu", 0.91, 0.89, 0.88);
+title_sprite = Sprite(title_image);
+title_sprite.SetPosition(
+  Window.GetX() + window_width / 2 - title_image.GetWidth() / 2,
+  Window.GetY() + window_height / 2 + logo.GetHeight() / 2 + 28,
+  20
+);
+
+Window.SetBackgroundTopColor(0.08, 0.08, 0.10);
+Window.SetBackgroundBottomColor(0.30, 0.19, 0.17);

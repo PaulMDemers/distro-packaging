@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if command -v plymouth-set-default-theme >/dev/null 2>&1; then
-  plymouth-set-default-theme demuntu-chrome || true
+  plymouth-set-default-theme demuntu-sunset || true
 fi
 
 mkdir -p /etc/lightdm/lightdm.conf.d
@@ -51,6 +51,12 @@ EOF
 
 mkdir -p /etc/xdg/autostart
 cp /etc/skel/.config/autostart/demuntu-compiz.desktop /etc/xdg/autostart/
+
+if [ -x /usr/lib/demuntu/apply-mate-theme ]; then
+  mkdir -p /etc/skel/.config/autostart
+  cp /etc/xdg/autostart/demsunset-mate-theme.desktop \
+    /etc/skel/.config/autostart/demsunset-mate-theme.desktop 2>/dev/null || true
+fi
 
 rm -f /var/crash/* || true
 if [ -f /etc/default/apport ]; then

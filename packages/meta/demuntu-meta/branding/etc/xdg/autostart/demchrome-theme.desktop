@@ -2,4 +2,6 @@
 Type=Application
 Name=DemChrome Theme
 Exec=/usr/lib/demuntu/apply-xfce-theme
+OnlyShowIn=XFCE;
 X-GNOME-Autostart-enabled=true
+NoDisplay=true

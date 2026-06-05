@@ -38,7 +38,7 @@ Ubuntu base media is fetched and verified with:
 | `demian-rescue-live` | `dist/images/demian-rescue-live-trixie-amd64.iso` | `112ccc8e2d671c3f37ce147b8f67a0c9ece5252abeea73405ec86ce77ca7454a` | `DEMIAN_RESCUE_READY` |
 | `demuntu-server-autoinstall` | `dist/images/demuntu-server-autoinstall.iso` | `2bdec23528e295e06ea633a6f0eae3374747bee08a674bdfff802182b1220f20` | `DEMUNTU_INSTALL_READY` |
 | `demuntu-desktop-live` | `dist/images/demuntu-desktop-live.iso` | `9a26c7581d694114b11e86a26dab9e4bb0e84a09718bd3c050c753b25ea66974` | `DEMUNTU_DESKTOP_READY` |
-| `demuntu-desktop-mate-live` | `dist/images/demuntu-desktop-mate-live.iso` | `c8879d33b5770d13245e30347e35eb7899cbc304462292f5739187214aa75105` | `DEMUNTU_MATE_DESKTOP_READY` |
+| `demuntu-desktop-mate-live` | `dist/images/demuntu-desktop-mate-live.iso` | `cdbe2787a7a59acff1bf1b435417088a6a455eaef2242dd83356e05d8a2e0157` | `DEMUNTU_MATE_DESKTOP_READY` |
 
 ## Validation Gates
 
@@ -213,9 +213,9 @@ qemu-system-x86_64 \
 The visible desktop should show:
 
 - XFCE panel and desktop icons
-- Red/silver Demuntu wallpaper
-- DemChrome icon theme
-- charcoal DemChrome GTK theme with red focus/selection highlights
+- DemSunset grey/orange/pink Demuntu wallpaper
+- DemSunset icon theme
+- charcoal DemSunset GTK/MATE theme with orange and pink focus/selection highlights
 - Vivaldi and VLC as default desktop applications
 - the centered Demuntu Welcome setup app on first login
 

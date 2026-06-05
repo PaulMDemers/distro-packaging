@@ -1,0 +1,130 @@
+@define-color dem_bg #34343a;
+@define-color dem_bg_dark #26272d;
+@define-color dem_panel #3a3a40;
+@define-color dem_fg #f2f0ef;
+@define-color dem_muted #c9c6c5;
+@define-color dem_orange #f07a2e;
+@define-color dem_orange_dark #a9461d;
+@define-color dem_pink #ec5c86;
+@define-color dem_silver #d7dadd;
+@define-color theme_bg_color @dem_bg;
+@define-color theme_fg_color @dem_fg;
+@define-color theme_base_color @dem_bg_dark;
+@define-color theme_text_color @dem_fg;
+@define-color theme_selected_bg_color @dem_orange;
+@define-color theme_selected_fg_color #17171b;
+
+* {
+  border-radius: 0;
+  outline-color: alpha(@dem_pink, 0.82);
+  caret-color: @dem_pink;
+}
+
+window,
+dialog,
+popover,
+menu,
+.background {
+  background-color: @dem_bg;
+  color: @dem_fg;
+}
+
+menu,
+menuitem,
+.menu,
+.menuitem {
+  background-color: @dem_bg_dark;
+  color: @dem_fg;
+}
+
+menuitem:hover,
+menuitem:selected,
+menuitem:focus,
+.menuitem:hover,
+.menuitem:selected,
+.menuitem:focus,
+modelbutton:hover,
+modelbutton:selected {
+  background-color: @dem_orange;
+  color: #17171b;
+}
+
+menu separator {
+  background-color: #5d5d65;
+}
+
+headerbar,
+toolbar,
+menubar,
+notebook > header {
+  background: linear-gradient(to bottom, #48484f, @dem_panel);
+  color: @dem_fg;
+  border-color: #5c5c64;
+}
+
+button,
+entry,
+combobox,
+spinbutton,
+textview,
+treeview,
+list,
+sidebar,
+notebook stack {
+  background-color: @dem_bg_dark;
+  color: @dem_fg;
+  border: 1px solid #5c5c64;
+}
+
+button {
+  background: linear-gradient(to bottom, #54545c, #37373d);
+  border-color: #71717a;
+  padding: 6px 10px;
+}
+
+button:hover {
+  background: linear-gradient(to bottom, #625d61, #403d42);
+  border-color: @dem_pink;
+}
+
+button:focus,
+entry:focus,
+treeview:focus,
+textview:focus {
+  border-color: @dem_pink;
+  box-shadow: inset 0 0 0 1px alpha(@dem_pink, 0.62);
+}
+
+button:checked,
+button.default,
+button.suggested-action {
+  background: linear-gradient(to bottom, #ff8a3d, @dem_orange_dark);
+  color: #16161a;
+  border-color: #ffb06f;
+}
+
+selection,
+*:selected {
+  background-color: @dem_orange;
+  color: #17171b;
+}
+
+checkbutton check:checked,
+radiobutton radio:checked {
+  background-color: @dem_pink;
+  border-color: #ff91ad;
+}
+
+scrollbar slider {
+  background-color: #676871;
+}
+
+scrollbar slider:hover {
+  background-color: @dem_silver;
+}
+
+tooltip {
+  background-color: #25262c;
+  color: @dem_fg;
+  border: 1px solid @dem_pink;
+}

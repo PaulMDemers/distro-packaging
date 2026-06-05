@@ -1,0 +1,57 @@
+#!/bin/sh
+set -eu
+
+wallpaper="/usr/share/backgrounds/demuntu/demuntu-default.png"
+icon_theme="DemSunset"
+gtk_theme="DemSunset-Dark"
+marco_theme="DemSunset-Dark"
+log_dir="${XDG_CACHE_HOME:-$HOME/.cache}"
+log_file="$log_dir/demsunset-mate-theme.log"
+
+[ -f "$wallpaper" ] || exit 0
+command -v gsettings >/dev/null 2>&1 || exit 0
+
+mkdir -p "$log_dir" 2>/dev/null || true
+exec >> "$log_file" 2>&1
+
+echo "DemSunset MATE theme apply start: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+echo "DISPLAY=${DISPLAY:-} DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-}"
+
+set_gsettings() {
+  schema="$1"
+  key="$2"
+  value="$3"
+  if gsettings writable "$schema" "$key" >/dev/null 2>&1; then
+    gsettings set "$schema" "$key" "$value" >/dev/null 2>&1 || true
+  fi
+}
+
+set_gsettings org.mate.interface gtk-theme "'$gtk_theme'"
+set_gsettings org.mate.interface icon-theme "'$icon_theme'"
+set_gsettings org.mate.interface cursor-theme "'Adwaita'"
+set_gsettings org.mate.interface font-name "'Sans 10'"
+set_gsettings org.mate.interface document-font-name "'Sans 10'"
+set_gsettings org.mate.interface monospace-font-name "'Monospace 10'"
+set_gsettings org.mate.Marco.general theme "'$marco_theme'"
+set_gsettings org.mate.background picture-filename "'$wallpaper'"
+set_gsettings org.mate.background picture-options "'zoom'"
+set_gsettings org.mate.background primary-color "'#1b1c22'"
+set_gsettings org.mate.background secondary-color "'#ef7d35'"
+set_gsettings org.mate.background color-shading-type "'vertical-gradient'"
+
+for top in top bottom panel0 panel-0 panel_0; do
+  path="/org/mate/panel/toplevels/$top/"
+  gsettings set "org.mate.panel.toplevel:$path" background-type "'color'" >/dev/null 2>&1 || true
+  gsettings set "org.mate.panel.toplevel:$path" background-color "'#34343a'" >/dev/null 2>&1 || true
+done
+
+if command -v mate-panel >/dev/null 2>&1 && pgrep -u "$(id -u)" -x mate-panel >/dev/null 2>&1; then
+  mate-panel --replace >/dev/null 2>&1 &
+fi
+
+desktop_dir="$HOME/Desktop"
+if [ -d "$desktop_dir" ]; then
+  find "$desktop_dir" -maxdepth 1 -name '*.desktop' -exec chmod +x {} \; 2>/dev/null || true
+fi
+
+echo "DemSunset MATE theme apply done"

@@ -36,11 +36,11 @@ interactive text.
 | --- | --- | --- |
 | Desktop wallpaper | `/usr/share/backgrounds/demian/demian-default.png` | `/usr/share/backgrounds/demuntu/demuntu-default.png` |
 | GRUB background | `/usr/share/backgrounds/demian/demian-grub.png` | `/usr/share/backgrounds/demuntu/demuntu-grub.png` |
-| Icon theme | `/usr/share/icons/DemChrome` | `/usr/share/icons/DemChrome` |
+| Icon theme | `/usr/share/icons/DemChrome` | `/usr/share/icons/DemSunset` for the MATE release; `/usr/share/icons/DemChrome` remains for the XFCE prototype |
 | XFCE defaults | `/usr/share/demian/xfce-defaults/xfce4` | `/usr/share/demuntu/xfce-defaults/xfce4` |
 | XFCE runtime helper | `/usr/lib/demian/apply-xfce-theme` | `/usr/lib/demuntu/apply-xfce-theme` |
 | LightDM greeter | `/etc/lightdm/lightdm-gtk-greeter.conf.d/50-demchrome.conf` | `/etc/lightdm/lightdm-gtk-greeter.conf.d/50-demchrome.conf` |
-| Plymouth theme | `/usr/share/plymouth/themes/demian-chrome` | `/usr/share/plymouth/themes/demuntu-chrome` |
+| Plymouth theme | `/usr/share/plymouth/themes/demian-chrome` | `/usr/share/plymouth/themes/demuntu-sunset` for the MATE release; `/usr/share/plymouth/themes/demuntu-chrome` remains for the XFCE prototype |
 | Welcome launcher | `/etc/skel/Desktop/Demian Welcome.desktop` | `/etc/skel/Desktop/Demuntu Welcome.desktop` |
 
 The XFCE runtime helper exists because live sessions create monitor-specific

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=DemSunset-Dark
+Comment=Charcoal, silver, orange, and pink Demuntu MATE theme
+
+[X-GNOME-Metatheme]
+GtkTheme=DemSunset-Dark
+MetacityTheme=DemSunset-Dark
+IconTheme=DemSunset
+CursorTheme=Adwaita

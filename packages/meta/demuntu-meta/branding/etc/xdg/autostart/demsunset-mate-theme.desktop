@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=DemSunset MATE Theme
+Exec=/usr/lib/demuntu/apply-mate-theme
+OnlyShowIn=MATE;
+X-MATE-Autostart-enabled=true
+NoDisplay=true

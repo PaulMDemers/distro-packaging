@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Demuntu Sunset
+Description=Sunset grey, orange, and pink Demuntu boot splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/demuntu-sunset
+ScriptFile=/usr/share/plymouth/themes/demuntu-sunset/demuntu-sunset.script

@@ -14,8 +14,8 @@ Demuntu MATE v1 is the first release-focused Demuntu Desktop line after the
 - Carry forward Demuntu Welcome, optional developer package sets, Vivaldi, VLC,
   driver/network/audio tooling, and the stripped default app policy from XFCE
   v1.
-- Replace the DemChrome red/chrome prototype look with a sunset grey,
-  orange, and pink identity.
+- Replace the DemChrome red/chrome prototype look with the DemSunset grey,
+  orange, pink, and silver identity.
 
 ## Initial Profile
 
@@ -44,7 +44,7 @@ remaining upstream Thunderbird/snap state from the live layer stack.
 
 ```text
 ISO:    dist/images/demuntu-desktop-mate-live.iso
-SHA256: c8879d33b5770d13245e30347e35eb7899cbc304462292f5739187214aa75105
+SHA256: cdbe2787a7a59acff1bf1b435417088a6a455eaef2242dd83356e05d8a2e0157
 Marker: DEMUNTU_MATE_DESKTOP_READY
 ```
 
@@ -58,6 +58,7 @@ Audit notes:
   stripped, and auxiliary casper layers no longer contain the old
   `snap-thunderbird` mount unit.
 - The live serial log confirms `DEMUNTU_DESKTOP_SESSION mate`.
+- The theme hook emits `DEMUNTU_DESKTOP_APPLY_THEME_DONE`.
 
 ## Desktop Stack
 
@@ -80,18 +81,24 @@ compiz-plugins-extra
 fusion-icon
 ```
 
+## DemSunset Theme
+
+The MATE release line uses:
+
+```text
+Wallpaper: /usr/share/backgrounds/demuntu/demuntu-default.png
+GTK/Marco theme: DemSunset-Dark
+Icon theme: DemSunset
+Plymouth theme: demuntu-sunset
+MATE runtime helper: /usr/lib/demuntu/apply-mate-theme
+Compiz defaults: /etc/skel/.config/compiz-1/compizconfig/Default.ini
+```
+
 ## Next Work
 
 1. Boot the MATE ISO visibly in QEMU.
 2. Verify whether Compiz starts reliably on the live image under QEMU and on
    real hardware.
-3. Add the sunset theme package assets:
-   - wallpaper
-   - Plymouth splash
-   - GRUB background
-   - LightDM greeter config
-   - MATE GTK theme
-   - icon recolors
-4. Add Compiz defaults for cube/expo behavior with a clean fallback path.
-5. Move XFCE-specific branding scripts into legacy/prototype paths or replace
+3. Tune Compiz defaults for cube/expo behavior against QEMU and hardware.
+4. Move XFCE-specific branding scripts into legacy/prototype paths or replace
    them with MATE-aware equivalents.

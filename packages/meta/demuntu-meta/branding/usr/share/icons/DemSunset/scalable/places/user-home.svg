@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="roof" x1="12" y1="50" x2="52" y2="12" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a9461d"/><stop offset="0.55" stop-color="#f07a2e"/><stop offset="1" stop-color="#ec5c86"/>
+    </linearGradient>
+    <linearGradient id="silver" x1="14" y1="16" x2="50" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f2f3f3"/><stop offset="0.52" stop-color="#8d8e96"/><stop offset="1" stop-color="#4b4b54"/>
+    </linearGradient>
+  </defs>
+  <path d="M8 31 32 12l24 19-4 5-20-16-20 16z" fill="url(#roof)"/>
+  <path d="M16 32h32v23H16z" fill="#202127" stroke="url(#silver)" stroke-width="4"/>
+  <path d="M27 42h10v13H27z" fill="url(#roof)"/>
+</svg>

@@ -32,5 +32,5 @@ deferred while the builds remain local.
 
 Branding package payloads are documented in `docs/BRANDING.md`. In short,
 `demian-branding` and `demuntu-branding` carry release identity, wallpapers,
-DemChrome icons, XFCE defaults, LightDM greeter config, Plymouth themes, and
+DemChrome/DemSunset icons, XFCE and MATE defaults, LightDM greeter config, Plymouth themes, and
 runtime desktop theme helpers.
