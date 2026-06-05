@@ -44,7 +44,7 @@ remaining upstream Thunderbird/snap state from the live layer stack.
 
 ```text
 ISO:    dist/images/demuntu-desktop-mate-live.iso
-SHA256: 0a8ba6f9aaa2abe1b6ed34f0dfa8a261ba1ba9208e2a3a5db92ab170392b16ad
+SHA256: 093b3406efc0d5780f18d99ac874d8175e58f350e049ef4fd5334e5056b04baa
 Marker: DEMUNTU_MATE_DESKTOP_READY
 ```
 
