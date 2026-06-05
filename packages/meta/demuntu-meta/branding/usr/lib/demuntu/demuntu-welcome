@@ -18,16 +18,16 @@ PACKAGE_SETS_DIR = Path(os.environ.get("DEMUNTU_PACKAGE_SETS_DIR", "/usr/lib/dem
 STATE_FILE = Path(
     os.environ.get("DEMUNTU_WELCOME_STATE", str(Path.home() / ".config" / "demuntu" / "welcome-seen"))
 )
-WELCOME_TEXT = """Welcome to Demuntu Red Chrome.
+WELCOME_TEXT = """Welcome to Demuntu Sunset.
 
 This live desktop is built from Ubuntu with Demuntu local packages layered in:
 
 - demuntu-branding
 - demuntu-base
-- demuntu-desktop
+- demuntu-mate-desktop
 
-The current desktop profile includes XFCE, LightDM autologin, NetworkManager,
-audio controls, DemChrome branding, and optional developer package sets."""
+The current desktop profile includes MATE, LightDM autologin, NetworkManager,
+audio controls, DemSunset branding, and optional developer package sets."""
 
 
 @dataclass(frozen=True)
@@ -285,27 +285,27 @@ def run_gui(first_run: bool) -> int:
     sets = available_sets()
     root = tk.Tk()
     root.title("Demuntu Welcome")
-    root.configure(bg="#1f2023")
+    root.configure(bg="#26272d")
     root.minsize(720, 500)
     center_window(root, 820, 560)
 
     style = ttk.Style(root)
     style.theme_use("clam")
-    style.configure(".", background="#1f2023", foreground="#eceff1", fieldbackground="#141518")
-    style.configure("TFrame", background="#1f2023")
-    style.configure("Card.TFrame", background="#26272a", relief="flat")
-    style.configure("TLabel", background="#1f2023", foreground="#eceff1")
-    style.configure("Card.TLabel", background="#26272a", foreground="#eceff1")
-    style.configure("Header.TLabel", font=("TkDefaultFont", 18, "bold"), foreground="#f4f6f7")
-    style.configure("Sub.TLabel", foreground="#b9bec3")
-    style.configure("TCheckbutton", background="#1f2023", foreground="#eceff1")
-    style.configure("TNotebook", background="#1f2023", borderwidth=0)
-    style.configure("TNotebook.Tab", background="#292a2d", foreground="#d7dde0", padding=(12, 7))
-    style.map("TNotebook.Tab", background=[("selected", "#3a3c40")], foreground=[("selected", "#ffffff")])
-    style.configure("TButton", background="#33363a", foreground="#f4f6f7", bordercolor="#565b60")
-    style.map("TButton", background=[("active", "#42464b")])
-    style.configure("Accent.TButton", foreground="#ffffff", background="#b71924")
-    style.map("Accent.TButton", background=[("active", "#d12834")])
+    style.configure(".", background="#26272d", foreground="#f2f0ef", fieldbackground="#191a20")
+    style.configure("TFrame", background="#26272d")
+    style.configure("Card.TFrame", background="#34343a", relief="flat")
+    style.configure("TLabel", background="#26272d", foreground="#f2f0ef")
+    style.configure("Card.TLabel", background="#34343a", foreground="#f2f0ef")
+    style.configure("Header.TLabel", font=("TkDefaultFont", 18, "bold"), foreground="#fff4ee")
+    style.configure("Sub.TLabel", foreground="#c9c6c5")
+    style.configure("TCheckbutton", background="#26272d", foreground="#f2f0ef")
+    style.configure("TNotebook", background="#26272d", borderwidth=0)
+    style.configure("TNotebook.Tab", background="#34343a", foreground="#d7dadd", padding=(12, 7))
+    style.map("TNotebook.Tab", background=[("selected", "#4a454a")], foreground=[("selected", "#ffffff")])
+    style.configure("TButton", background="#3a3a40", foreground="#f2f0ef", bordercolor="#5c5c64")
+    style.map("TButton", background=[("active", "#4a454a")])
+    style.configure("Accent.TButton", foreground="#ffffff", background="#a9461d")
+    style.map("Accent.TButton", background=[("active", "#f07a2e")])
 
     outer = ttk.Frame(root, padding=20)
     outer.pack(fill="both", expand=True)
@@ -313,7 +313,7 @@ def run_gui(first_run: bool) -> int:
     header = ttk.Frame(outer)
     header.pack(fill="x", pady=(0, 14))
     ttk.Label(header, text="Demuntu Welcome", style="Header.TLabel").pack(side="left")
-    ttk.Label(header, text="Red Chrome desktop", style="Sub.TLabel").pack(side="right", pady=(7, 0))
+    ttk.Label(header, text="Sunset MATE desktop", style="Sub.TLabel").pack(side="right", pady=(7, 0))
 
     notebook = ttk.Notebook(outer)
     notebook.pack(fill="both", expand=True)
@@ -328,9 +328,9 @@ def run_gui(first_run: bool) -> int:
     welcome_text = tk.Text(
         welcome_tab,
         height=12,
-        bg="#141518",
-        fg="#eceff1",
-        insertbackground="#eceff1",
+        bg="#191a20",
+        fg="#f2f0ef",
+        insertbackground="#f2f0ef",
         relief="flat",
         padx=12,
         pady=12,
@@ -343,7 +343,7 @@ def run_gui(first_run: bool) -> int:
     quick = ttk.Frame(welcome_tab)
     quick.pack(fill="x", pady=(14, 0))
 
-    output = scrolledtext.ScrolledText(setup_tab, height=8, bg="#101113", fg="#eceff1", insertbackground="#eceff1")
+    output = scrolledtext.ScrolledText(setup_tab, height=8, bg="#17181d", fg="#f2f0ef", insertbackground="#f2f0ef")
     output.pack(side="bottom", fill="both", expand=True, pady=(16, 0))
     output.configure(state="disabled")
 

@@ -12,7 +12,7 @@
 @define-color theme_base_color @dem_bg_dark;
 @define-color theme_text_color @dem_fg;
 @define-color theme_selected_bg_color @dem_orange;
-@define-color theme_selected_fg_color #17171b;
+@define-color theme_selected_fg_color @dem_fg;
 
 * {
   border-radius: 0;
@@ -62,6 +62,21 @@ notebook > header {
   border-color: #5c5c64;
 }
 
+menubar > menuitem,
+.menubar > menuitem {
+  padding: 4px 10px;
+  margin: 0 2px;
+  color: @dem_fg;
+}
+
+menubar > menuitem:hover,
+menubar > menuitem:selected,
+.menubar > menuitem:hover,
+.menubar > menuitem:selected {
+  background-color: alpha(@dem_orange, 0.85);
+  color: @dem_fg;
+}
+
 button,
 entry,
 combobox,
@@ -99,14 +114,20 @@ button:checked,
 button.default,
 button.suggested-action {
   background: linear-gradient(to bottom, #ff8a3d, @dem_orange_dark);
-  color: #16161a;
+  color: @dem_fg;
   border-color: #ffb06f;
 }
 
 selection,
 *:selected {
   background-color: @dem_orange;
-  color: #17171b;
+  color: @dem_fg;
+}
+
+button:checked label,
+button:checked *,
+*:selected label {
+  color: @dem_fg;
 }
 
 checkbutton check:checked,
