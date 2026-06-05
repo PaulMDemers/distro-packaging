@@ -33,7 +33,7 @@ Ubuntu base media is fetched and verified with:
 | Profile | ISO | SHA256 | Test marker |
 | --- | --- | --- | --- |
 | `demian-server-live` | `dist/images/demian-server-live-trixie-amd64.iso` | `c6fec2ea5561dc69c4bbdf397aac945764a439a248ccd32d776087207d70dbaf` | `DEMIAN_SERVER_READY` |
-| `demian-desktop-live` | `dist/images/demian-desktop-live-trixie-amd64.iso` | `29b5c5a18d354ae36707bc0e1c12554692c89bfccc8bd996aa68665bcdc52272` | `DEMIAN_DESKTOP_READY` |
+| `demian-desktop-live` | `dist/images/demian-desktop-live-trixie-amd64.iso` | `8f8ff7795330696143301013263bc14aa93693f1c549ba61d81f566c1a15f431` | `DEMIAN_DESKTOP_READY` |
 | `demian-rescue-live` | `dist/images/demian-rescue-live-trixie-amd64.iso` | `112ccc8e2d671c3f37ce147b8f67a0c9ece5252abeea73405ec86ce77ca7454a` | `DEMIAN_RESCUE_READY` |
 | `demuntu-server-autoinstall` | `dist/images/demuntu-server-autoinstall.iso` | `2bdec23528e295e06ea633a6f0eae3374747bee08a674bdfff802182b1220f20` | `DEMUNTU_INSTALL_READY` |
 | `demuntu-desktop-live` | `dist/images/demuntu-desktop-live.iso` | `9a26c7581d694114b11e86a26dab9e4bb0e84a09718bd3c050c753b25ea66974` | `DEMUNTU_DESKTOP_READY` |
