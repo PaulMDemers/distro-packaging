@@ -31,25 +31,35 @@ menu,
 
 /* MATE Control Center and several older GTK3 tools use explicit views,
    frames, and viewport widgets that otherwise fall back to a light base. */
-window.background,
 dialog.background,
-.csd.background,
 viewport,
 scrolledwindow,
 frame,
 frame > border,
-iconview,
-iconview.view,
 .view,
 .rubberband,
-stack,
 notebook,
 notebook > stack,
-paned,
-grid,
-box,
 list,
 row {
+  background-color: @dem_bg;
+  color: @dem_fg;
+}
+
+/* Caja's desktop is a GtkIconView over the wallpaper. Keep generic icon views
+   transparent so desktop icons do not paint a solid sheet over the background. */
+iconview,
+iconview.view {
+  background-color: transparent;
+  color: @dem_fg;
+}
+
+/* MATE Control Center exposes its launcher grid as a named icon view in many
+   builds; this keeps that specific view dark without clobbering Caja desktop. */
+iconview#main-icon-view,
+iconview#search-results-view,
+.mate-control-center iconview,
+.control-center iconview {
   background-color: @dem_bg;
   color: @dem_fg;
 }
