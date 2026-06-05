@@ -12,6 +12,7 @@ transmission-common
 transmission-gtk
 shotwell
 shotwell-common
+snapd
 
 # GNOME shell/session packages replaced by MATE for this release line.
 ubuntu-desktop

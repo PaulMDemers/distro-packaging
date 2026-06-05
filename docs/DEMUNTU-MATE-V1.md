@@ -36,14 +36,15 @@ make demuntu-desktop-mate-live-test
 The boot marker target is `DEMUNTU_MATE_DESKTOP_READY`, emitted after the live
 session starts `mate-panel` and `caja`.
 
-## First Build
+## Current Build
 
-The first validated MATE release-line ISO was built and boot-tested on
-June 5, 2026.
+The current validated MATE release-line ISO was built and boot-tested on
+June 5, 2026. It includes the clean auxiliary-layer pass that strips the
+remaining upstream Thunderbird/snap state from the live layer stack.
 
 ```text
 ISO:    dist/images/demuntu-desktop-mate-live.iso
-SHA256: f2e51bcd184b246cf0fb52a225e35bef72e02ddd7ef61727f1d066ea71e8c99b
+SHA256: c8879d33b5770d13245e30347e35eb7899cbc304462292f5739187214aa75105
 Marker: DEMUNTU_MATE_DESKTOP_READY
 ```
 
@@ -53,6 +54,9 @@ Audit notes:
   are installed in the live rootfs.
 - `demuntu-desktop`, `xfce4`, `xfce4-panel`, `xfdesktop`, `thunar`, and
   `libreoffice-common` are absent from the MATE live rootfs.
+- `snapd` is removed for this spin, seeded Firefox/Thunderbird snaps are
+  stripped, and auxiliary casper layers no longer contain the old
+  `snap-thunderbird` mount unit.
 - The live serial log confirms `DEMUNTU_DESKTOP_SESSION mate`.
 
 ## Desktop Stack

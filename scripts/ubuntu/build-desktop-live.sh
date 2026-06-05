@@ -188,6 +188,23 @@ read_config_list() {
   grep -vE '^[[:space:]]*(#|$)' "$list_file"
 }
 
+package_removal_requested() {
+  local package_name="$1"
+  local remove_file="$config_dir/remove-packages.list"
+  local spec
+
+  [ -s "$remove_file" ] || return 1
+
+  while IFS= read -r spec; do
+    [ -n "$spec" ] || continue
+    if [[ "$spec" == "$package_name" ]]; then
+      return 0
+    fi
+  done < <(read_config_list "$remove_file")
+
+  return 1
+}
+
 remove_seeded_snaps() {
   local target_root="$1"
   local snap_file="$config_dir/remove-snaps.list"
@@ -249,6 +266,9 @@ remove_seeded_snaps() {
     rm -f "$target_root/var/lib/snapd/snaps/${snap_name}_"*.snap 2>/dev/null || true
     rm -f "$target_root/var/lib/snapd/sequence/${snap_name}.json" 2>/dev/null || true
     rm -rf "$target_root/snap/$snap_name" 2>/dev/null || true
+    rm -f "$target_root/etc/systemd/system/snap-${snap_name}-"*.mount 2>/dev/null || true
+    rm -f "$target_root/usr/lib/systemd/system/snap-${snap_name}-"*.mount 2>/dev/null || true
+    rm -f "$target_root/lib/systemd/system/snap-${snap_name}-"*.mount 2>/dev/null || true
     if [ -d "$target_root/var/lib/snapd" ]; then
       while IFS= read -r -d '' snap_artifact; do
         rm -rf "$snap_artifact"
@@ -335,6 +355,29 @@ remove_desktop_packages() {
   chroot "$target_root" env DEBIAN_FRONTEND=noninteractive apt-get autoremove -y --purge
 }
 
+purge_snapd_if_requested() {
+  local target_root="$1"
+
+  package_removal_requested snapd || return 0
+
+  if chroot "$target_root" dpkg-query -W -f='${Package}\n' snapd >/dev/null 2>&1; then
+    chroot "$target_root" env DEBIAN_FRONTEND=noninteractive apt-get purge -y snapd
+    chroot "$target_root" env DEBIAN_FRONTEND=noninteractive apt-get autoremove -y --purge
+  fi
+}
+
+remove_snapd_state_if_requested() {
+  local target_root="$1"
+
+  package_removal_requested snapd || return 0
+
+  rm -rf \
+    "$target_root/snap" \
+    "$target_root/var/snap" \
+    "$target_root/var/cache/snapd" \
+    "$target_root/var/lib/snapd" 2>/dev/null || true
+}
+
 sanitize_desktop_surface() {
   local target_root="$1"
   local app_dir="$target_root/usr/share/applications"
@@ -393,11 +436,54 @@ EOF
 
 disable_snap_seed_wait() {
   local target_root="$1"
+  local unit
+  local unit_dir
+  local snap_path
 
   mkdir -p "$target_root/etc/systemd/system"
-  ln -sfn /dev/null "$target_root/etc/systemd/system/snapd.seeded.service"
-  ln -sfn /dev/null "$target_root/etc/systemd/system/snapd.service"
-  ln -sfn /dev/null "$target_root/etc/systemd/system/snapd.socket"
+
+  if [ -d "$target_root/etc/systemd/system" ]; then
+    while IFS= read -r -d '' snap_path; do
+      rm -rf "$snap_path"
+    done < <(
+      find "$target_root/etc/systemd/system" -ignore_readdir_race \
+        \( -name 'snap-*' -o -name 'snapd*' -o -name '*snapd*' \) \
+        -depth \
+        -print0 2>/dev/null
+    )
+
+    while IFS= read -r -d '' snap_path; do
+      case "$(readlink "$snap_path" 2>/dev/null || true)" in
+        *snap*) rm -f "$snap_path" ;;
+      esac
+    done < <(find "$target_root/etc/systemd/system" -ignore_readdir_race -type l -print0 2>/dev/null)
+  fi
+
+  for unit_dir in "$target_root/usr/lib/systemd/system" "$target_root/lib/systemd/system"; do
+    [ -d "$unit_dir" ] || continue
+    while IFS= read -r -d '' snap_path; do
+      rm -f "$snap_path"
+    done < <(
+      find "$unit_dir" -maxdepth 1 -ignore_readdir_race \
+        \( -name 'snap-*' -o -name 'snapd*' -o -name '*snapd*' \) \
+        -print0 2>/dev/null
+    )
+  done
+
+  for unit in \
+    snapd.apparmor.service \
+    snapd.autoimport.service \
+    snapd.core-fixup.service \
+    snapd.failure.service \
+    snapd.mounts-pre.target \
+    snapd.mounts.target \
+    snapd.recovery-chooser-trigger.service \
+    snapd.seeded.service \
+    snapd.service \
+    snapd.socket \
+    snapd.system-shutdown.service; do
+    ln -sfn /dev/null "$target_root/etc/systemd/system/$unit"
+  done
 }
 
 write_marker_service() {
@@ -517,6 +603,7 @@ EOF
   chroot "$rootfs" apt-get update
   remove_seeded_snaps "$rootfs"
   remove_desktop_packages "$rootfs"
+  remove_snapd_state_if_requested "$rootfs"
   disable_snap_seed_wait "$rootfs"
   configure_external_apt_sources "$rootfs"
   chroot "$rootfs" apt-get update
@@ -532,6 +619,8 @@ EOF
     chroot "$rootfs" env DEBIAN_FRONTEND=noninteractive /bin/sh -c 'apt-get install -y /tmp/demuntu-packages/*.deb'
     rm -rf "$rootfs/tmp/demuntu-packages"
   fi
+  purge_snapd_if_requested "$rootfs"
+  remove_snapd_state_if_requested "$rootfs"
   sanitize_desktop_surface "$rootfs"
   disable_snap_seed_wait "$rootfs"
   chroot "$rootfs" apt-get clean
@@ -576,16 +665,23 @@ while IFS= read -r -d '' live_layer; do
   mkdir -p "$(dirname "$layer_root")"
   unsquashfs -d "$layer_root" "$live_layer" >/dev/null
   remove_seeded_snaps "$layer_root"
+  remove_snapd_state_if_requested "$layer_root"
   sanitize_desktop_surface "$layer_root"
   disable_snap_seed_wait "$layer_root"
-  write_marker_service "$layer_root"
+  case "$layer_name" in
+    *.live.squashfs) write_marker_service "$layer_root" ;;
+  esac
   rm -f "$live_layer"
   mksquashfs "$layer_root" "$live_layer" -noappend -comp xz -b 1M >/dev/null
   layer_size_file="${live_layer%.squashfs}.size"
   if [ -f "$layer_size_file" ]; then
     du -sx --block-size=1 "$layer_root" | awk '{ print $1 }' > "$layer_size_file"
   fi
-done < <(find "$work_dir/extract/casper" -maxdepth 1 -type f -name '*.live.squashfs' -print0)
+done < <(
+  find "$work_dir/extract/casper" -maxdepth 1 -type f -name '*.squashfs' \
+    ! -path "$work_dir/extract/$LIVE_SQUASHFS_PATH" \
+    -print0
+)
 
 grub_cfg="$work_dir/extract/boot/grub/grub.cfg"
 if [ -f "$grub_cfg" ]; then
