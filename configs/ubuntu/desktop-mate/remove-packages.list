@@ -1,0 +1,26 @@
+# Packages from the upstream Ubuntu desktop squashfs that Demuntu strips before
+# adding the MATE release desktop and curated defaults.
+libreoffice*
+firefox
+thunderbird
+rhythmbox
+rhythmbox-data
+rhythmbox-plugins
+totem
+totem-common
+transmission-common
+transmission-gtk
+shotwell
+shotwell-common
+
+# GNOME shell/session packages replaced by MATE for this release line.
+ubuntu-desktop
+ubuntu-desktop-minimal
+gdm3
+gnome-shell
+gnome-shell-common
+gnome-session
+gnome-session-bin
+gnome-session-common
+nautilus
+gnome-terminal

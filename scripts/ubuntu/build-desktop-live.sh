@@ -42,6 +42,10 @@ done
 : "${ARCHITECTURE:=amd64}"
 : "${CUSTOM_METAPACKAGES:=}"
 : "${LOCAL_PACKAGE_DIR:=dist/packages}"
+: "${DESKTOP_SESSION:=xfce}"
+: "${DESKTOP_PANEL_PROCESS:=xfce4-panel}"
+: "${DESKTOP_DESKTOP_PROCESS:=xfdesktop}"
+: "${DESKTOP_THEME_APPLY:=/usr/lib/demuntu/apply-xfce-theme}"
 
 repo_root="$(pwd)"
 build_root="${BUILD_ROOT:-$repo_root/build}"
@@ -404,18 +408,21 @@ write_marker_service() {
     "$target_root/etc/systemd/system/getty.target.wants" \
     "$target_root/usr/local/sbin"
 
-  cat > "$target_root/usr/local/sbin/demuntu-desktop-ready" <<EOF
+cat > "$target_root/usr/local/sbin/demuntu-desktop-ready" <<EOF
 #!/bin/sh
 marker="${BOOT_MARKER}"
+panel_process="${DESKTOP_PANEL_PROCESS}"
+desktop_process="${DESKTOP_DESKTOP_PROCESS}"
+theme_apply="${DESKTOP_THEME_APPLY}"
 i=0
 
 while [ "\$i" -lt 180 ]; do
   live_user="\$(getent passwd 1000 | cut -d: -f1)"
   [ -n "\$live_user" ] || live_user="ubuntu"
 
-  if pgrep -u "\$live_user" -x xfce4-panel >/dev/null 2>&1 && \
-    pgrep -u "\$live_user" -x xfdesktop >/dev/null 2>&1; then
-    if [ -x /usr/lib/demuntu/apply-xfce-theme ]; then
+  if pgrep -u "\$live_user" -x "\$panel_process" >/dev/null 2>&1 && \
+    { [ -z "\$desktop_process" ] || pgrep -u "\$live_user" -x "\$desktop_process" >/dev/null 2>&1; }; then
+    if [ -n "\$theme_apply" ] && [ -x "\$theme_apply" ]; then
       uid="\$(id -u "\$live_user" 2>/dev/null || printf 1000)"
       home="\$(getent passwd "\$live_user" | cut -d: -f6)"
       [ -n "\$home" ] || home="/home/\$live_user"
@@ -426,24 +433,27 @@ while [ "\$i" -lt 180 ]; do
           XAUTHORITY="\$home/.Xauthority" \
           XDG_RUNTIME_DIR="/run/user/\$uid" \
           DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/\$uid/bus" \
-          timeout 45s /usr/lib/demuntu/apply-xfce-theme || printf "\\nDEMUNTU_DESKTOP_APPLY_THEME_FAILED\\n" > /dev/ttyS0
-        runuser -u "\$live_user" -- env \
-          DISPLAY=:0 \
-          XAUTHORITY="\$home/.Xauthority" \
-          XDG_RUNTIME_DIR="/run/user/\$uid" \
-          DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/\$uid/bus" \
-          xfconf-query -c xsettings -p /Net/ThemeName 2>/dev/null \
-          | sed 's/^/DEMUNTU_XFCE_THEME /' > /dev/ttyS0 || true
-        runuser -u "\$live_user" -- env \
-          DISPLAY=:0 \
-          XAUTHORITY="\$home/.Xauthority" \
-          XDG_RUNTIME_DIR="/run/user/\$uid" \
-          DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/\$uid/bus" \
-          xfconf-query -c xfce4-panel -p /plugins/plugin-1/show-button-title 2>/dev/null \
-          | sed 's/^/DEMUNTU_PANEL_TITLE /' > /dev/ttyS0 || true
+          timeout 45s "\$theme_apply" || printf "\\nDEMUNTU_DESKTOP_APPLY_THEME_FAILED\\n" > /dev/ttyS0
+        if command -v xfconf-query >/dev/null 2>&1; then
+          runuser -u "\$live_user" -- env \
+            DISPLAY=:0 \
+            XAUTHORITY="\$home/.Xauthority" \
+            XDG_RUNTIME_DIR="/run/user/\$uid" \
+            DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/\$uid/bus" \
+            xfconf-query -c xsettings -p /Net/ThemeName 2>/dev/null \
+            | sed 's/^/DEMUNTU_XFCE_THEME /' > /dev/ttyS0 || true
+          runuser -u "\$live_user" -- env \
+            DISPLAY=:0 \
+            XAUTHORITY="\$home/.Xauthority" \
+            XDG_RUNTIME_DIR="/run/user/\$uid" \
+            DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/\$uid/bus" \
+            xfconf-query -c xfce4-panel -p /plugins/plugin-1/show-button-title 2>/dev/null \
+            | sed 's/^/DEMUNTU_PANEL_TITLE /' > /dev/ttyS0 || true
+        fi
         printf "\\nDEMUNTU_DESKTOP_APPLY_THEME_DONE\\n" > /dev/ttyS0
       fi
     fi
+    printf "\\nDEMUNTU_DESKTOP_SESSION %s\\n" "${DESKTOP_SESSION}" > /dev/ttyS0
     printf "\\n%s\\n" "\$marker" > /dev/ttyS0
     exit 0
   fi

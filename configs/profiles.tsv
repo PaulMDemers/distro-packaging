@@ -4,3 +4,4 @@ demian-desktop-live	debian	live	configs/debian/desktop-live	Demian XFCE desktop 
 demian-rescue-live	debian	live	configs/debian/rescue-live	Demian rescue live ISO
 demuntu-server-autoinstall	ubuntu	autoinstall	configs/ubuntu/server-autoinstall	Demuntu Server autoinstall ISO
 demuntu-desktop-live	ubuntu	live	configs/ubuntu/desktop-live	Demuntu Desktop live ISO
+demuntu-desktop-mate-live	ubuntu	live	configs/ubuntu/desktop-mate	Demuntu Desktop MATE live ISO

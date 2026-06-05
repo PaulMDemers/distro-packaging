@@ -1,0 +1,33 @@
+[spin]
+id = "demuntu-desktop-mate-live"
+order = 51
+family = "ubuntu"
+kind = "live"
+profile_dir = "configs/ubuntu/desktop-mate"
+description = "Demuntu Desktop MATE live ISO"
+
+[image]
+distro_name = "demuntu-desktop-mate-live"
+image_name = "demuntu-desktop-mate-live"
+volume_id = "DEMUNTU_MATE"
+
+[ubuntu]
+base_alias = "ubuntu-26.04-lts-desktop-amd64"
+base_iso = "dist/downloads/ubuntu-26.04-desktop-amd64.iso"
+
+[boot]
+marker = "DEMUNTU_MATE_DESKTOP_READY"
+timeout = 900
+memory = 6144
+
+[desktop]
+session = "mate"
+panel_process = "mate-panel"
+desktop_process = "caja"
+theme_apply = ""
+
+[artifacts]
+serial_log = "dist/images/demuntu-desktop-mate-live-serial.log"
+
+[packages]
+metapackages = ["demuntu-branding", "demuntu-base", "demuntu-desktop"]

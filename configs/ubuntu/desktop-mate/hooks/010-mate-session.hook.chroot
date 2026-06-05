@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v plymouth-set-default-theme >/dev/null 2>&1; then
+  plymouth-set-default-theme demuntu-chrome || true
+fi
+
+mkdir -p /etc/lightdm/lightdm.conf.d
+cat > /etc/lightdm/lightdm.conf.d/50-demuntu-autologin.conf <<'EOF'
+[Seat:*]
+autologin-user=ubuntu
+autologin-user-timeout=0
+user-session=mate
+greeter-session=lightdm-gtk-greeter
+EOF
+
+printf '%s\n' /usr/sbin/lightdm > /etc/X11/default-display-manager
+rm -f /etc/systemd/system/display-manager.service
+ln -s /usr/lib/systemd/system/lightdm.service /etc/systemd/system/display-manager.service
+mkdir -p /etc/systemd/system/graphical.target.wants
+ln -sfn /etc/systemd/system/display-manager.service \
+  /etc/systemd/system/graphical.target.wants/display-manager.service
+systemctl disable gdm3.service gdm.service || true
+
+mkdir -p /etc/skel/.config/autostart /usr/local/bin
+cat > /usr/local/bin/demuntu-compiz-start <<'EOF'
+#!/bin/sh
+
+if ! command -v compiz >/dev/null 2>&1; then
+  exec marco --replace
+fi
+
+if ! command -v glxinfo >/dev/null 2>&1 || ! glxinfo >/dev/null 2>&1; then
+  exec marco --replace
+fi
+
+sleep 3
+exec compiz --replace ccp
+EOF
+chmod 0755 /usr/local/bin/demuntu-compiz-start
+
+cat > /etc/skel/.config/autostart/demuntu-compiz.desktop <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=Demuntu Compiz
+Exec=/usr/local/bin/demuntu-compiz-start
+OnlyShowIn=MATE;
+X-MATE-Autostart-enabled=true
+NoDisplay=true
+EOF
+
+mkdir -p /etc/xdg/autostart
+cp /etc/skel/.config/autostart/demuntu-compiz.desktop /etc/xdg/autostart/
+
+rm -f /var/crash/* || true
+if [ -f /etc/default/apport ]; then
+  sed -i 's/^enabled=.*/enabled=0/' /etc/default/apport
+fi
+systemctl disable \
+  apport.service \
+  apport-autoreport.path \
+  apport-autoreport.timer \
+  whoopsie.path || true

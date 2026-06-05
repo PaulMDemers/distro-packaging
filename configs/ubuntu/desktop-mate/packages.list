@@ -1,0 +1,67 @@
+# Hardware, networking, sound, and base desktop support carried forward from
+# prototype-xfce-v1.
+alsa-utils
+blueman
+bluez
+curl
+dbus-x11
+firmware-sof-signed
+fwupd
+gnome-disk-utility
+gvfs-backends
+htop
+iw
+lightdm
+lightdm-gtk-greeter
+linux-firmware
+mesa-utils
+modemmanager
+network-manager-gnome
+pavucontrol
+pkexec
+pipewire
+pipewire-pulse
+python3-tk
+software-properties-gtk
+tmux
+ubuntu-drivers-common
+udisks2
+upower
+vim
+wireless-regdb
+wireplumber
+wpasupplicant
+xarchiver
+
+# Curated defaults.
+vlc
+vivaldi-stable
+
+# MATE desktop target.
+mate-desktop-environment-core
+mate-applets
+mate-control-center
+mate-notification-daemon
+mate-polkit
+mate-power-manager
+mate-screensaver
+mate-session-manager
+mate-settings-daemon
+mate-system-monitor
+mate-terminal
+caja
+caja-open-terminal
+atril
+eom
+pluma
+
+# X11 compositing target. Compiz remains optional at runtime; Marco is kept as
+# the fallback MATE window manager.
+marco
+compiz
+compiz-mate
+compizconfig-settings-manager
+compiz-plugins
+compiz-plugins-default
+compiz-plugins-extra
+fusion-icon

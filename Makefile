@@ -53,6 +53,16 @@ UBUNTU_DESKTOP_MARKER ?= $(shell $(PROFILE_INFO) $(UBUNTU_DESKTOP_ID) boot_marke
 UBUNTU_DESKTOP_TIMEOUT ?= $(shell $(PROFILE_INFO) $(UBUNTU_DESKTOP_ID) boot_timeout)
 UBUNTU_DESKTOP_MEMORY ?= $(shell $(PROFILE_INFO) $(UBUNTU_DESKTOP_ID) memory)
 
+UBUNTU_MATE_ID ?= demuntu-desktop-mate-live
+UBUNTU_MATE_BASE_ALIAS ?= $(shell $(PROFILE_INFO) $(UBUNTU_MATE_ID) base_alias)
+UBUNTU_MATE_BASE_ISO ?= $(shell $(PROFILE_INFO) $(UBUNTU_MATE_ID) base_iso)
+UBUNTU_MATE_PROFILE ?= $(shell $(PROFILE_INFO) $(UBUNTU_MATE_ID) profile_dir)
+UBUNTU_MATE_ISO ?= $(shell $(PROFILE_INFO) $(UBUNTU_MATE_ID) iso)
+UBUNTU_MATE_SERIAL_LOG ?= $(shell $(PROFILE_INFO) $(UBUNTU_MATE_ID) serial_log)
+UBUNTU_MATE_MARKER ?= $(shell $(PROFILE_INFO) $(UBUNTU_MATE_ID) boot_marker)
+UBUNTU_MATE_TIMEOUT ?= $(shell $(PROFILE_INFO) $(UBUNTU_MATE_ID) boot_timeout)
+UBUNTU_MATE_MEMORY ?= $(shell $(PROFILE_INFO) $(UBUNTU_MATE_ID) memory)
+
 .PHONY: help spins profiles manifest check-host install-deps packages repo \
 	demian-server-live demian-server-live-test \
 	demian-desktop-live demian-desktop-live-test \
@@ -65,6 +75,7 @@ UBUNTU_DESKTOP_MEMORY ?= $(shell $(PROFILE_INFO) $(UBUNTU_DESKTOP_ID) memory)
 	demuntu-server-git-gui-tools-install demuntu-server-docker-gui-tools-install \
 	ubuntu-server-autoinstall ubuntu-server-autoinstall-boot-test ubuntu-server-autoinstall-install \
 	ubuntu-desktop-base demuntu-desktop-live demuntu-desktop-live-test \
+	demuntu-desktop-mate-live demuntu-desktop-mate-live-test \
 	ubuntu-desktop-live ubuntu-desktop-live-test \
 	clean-work clean-cache clean-artifacts clean-build
 
@@ -100,6 +111,8 @@ help:
 		'  ubuntu-desktop-base           Download and verify Ubuntu Desktop base ISO' \
 		'  demuntu-desktop-live          Build Demuntu Desktop live ISO' \
 		'  demuntu-desktop-live-test     Assert Demuntu Desktop live reaches userspace in QEMU' \
+		'  demuntu-desktop-mate-live     Build Demuntu Desktop MATE live ISO' \
+		'  demuntu-desktop-mate-live-test Assert Demuntu Desktop MATE reaches userspace in QEMU' \
 		'  ubuntu-desktop-live           Alias for demuntu-desktop-live' \
 		'  clean-work                    Remove temporary build trees and test disks' \
 		'  clean-cache                   Remove downloaded upstream base ISOs' \
@@ -346,6 +359,25 @@ demuntu-desktop-live-test: $(UBUNTU_DESKTOP_ISO)
 		--expect-serial "$(UBUNTU_DESKTOP_MARKER)" \
 		--serial-log "$(UBUNTU_DESKTOP_SERIAL_LOG)" \
 		"$(UBUNTU_DESKTOP_ISO)"
+
+demuntu-desktop-mate-live: $(UBUNTU_MATE_BASE_ISO)
+	./scripts/ubuntu/build-desktop-live.sh \
+		"$(UBUNTU_MATE_BASE_ISO)" \
+		"$(UBUNTU_MATE_PROFILE)"
+
+$(UBUNTU_MATE_ISO): $(UBUNTU_MATE_BASE_ISO)
+	./scripts/ubuntu/build-desktop-live.sh \
+		"$(UBUNTU_MATE_BASE_ISO)" \
+		"$(UBUNTU_MATE_PROFILE)"
+
+demuntu-desktop-mate-live-test: $(UBUNTU_MATE_ISO)
+	./scripts/test/boot-iso.sh \
+		--headless \
+		--memory "$(UBUNTU_MATE_MEMORY)" \
+		--timeout "$(UBUNTU_MATE_TIMEOUT)" \
+		--expect-serial "$(UBUNTU_MATE_MARKER)" \
+		--serial-log "$(UBUNTU_MATE_SERIAL_LOG)" \
+		"$(UBUNTU_MATE_ISO)"
 
 ubuntu-desktop-live: demuntu-desktop-live
 

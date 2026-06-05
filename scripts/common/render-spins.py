@@ -106,6 +106,7 @@ def load_spin(path: Path) -> dict[str, Any]:
         "debian": data.get("debian", {}),
         "ubuntu": data.get("ubuntu", {}),
         "boot": data.get("boot", {}),
+        "desktop": data.get("desktop", {}),
         "artifacts": data.get("artifacts", {}),
         "install": data.get("install", {}),
         "metapackages": metapackages,
@@ -146,6 +147,7 @@ def profile_env(spin: dict[str, Any]) -> str:
     debian = spin["debian"]
     ubuntu = spin["ubuntu"]
     boot = spin["boot"]
+    desktop = spin["desktop"]
     artifacts = spin["artifacts"]
     install = spin["install"]
 
@@ -167,6 +169,10 @@ def profile_env(spin: dict[str, Any]) -> str:
         env_line("BOOT_MARKER", optional_str(boot, "marker")),
         env_line("BOOT_TEST_TIMEOUT", optional_scalar(boot, "timeout")),
         env_line("BOOT_TEST_MEMORY", optional_scalar(boot, "memory")),
+        env_line("DESKTOP_SESSION", optional_str(desktop, "session")),
+        env_line("DESKTOP_PANEL_PROCESS", optional_str(desktop, "panel_process")),
+        env_line("DESKTOP_DESKTOP_PROCESS", optional_str(desktop, "desktop_process")),
+        env_line("DESKTOP_THEME_APPLY", optional_str(desktop, "theme_apply")),
         env_line("SCREENSHOT", optional_str(artifacts, "screenshot")),
         env_line("SERIAL_LOG", optional_str(artifacts, "serial_log")),
         env_line("INSTALL_DISK", optional_str(install, "disk")),
