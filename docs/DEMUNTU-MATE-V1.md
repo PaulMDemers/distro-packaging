@@ -44,7 +44,7 @@ remaining upstream Thunderbird/snap state from the live layer stack.
 
 ```text
 ISO:    dist/images/demuntu-desktop-mate-live.iso
-SHA256: 6b39bc976972cd6c618f0dd598ada9cb13e9951a27ef2a0194f7274ccfd41177
+SHA256: 6b996d67078b2250441c93b2ea9cc416550ca5358e6e5806359c9fa8cf318f4f
 Marker: DEMUNTU_MATE_DESKTOP_READY
 ```
 
@@ -80,6 +80,31 @@ compiz-plugins-default
 compiz-plugins-extra
 fusion-icon
 ```
+
+The desktop profile also carries virtualization guest integration for common
+test and homelab targets:
+
+```text
+qemu-guest-agent
+spice-vdagent
+open-vm-tools
+open-vm-tools-desktop
+virtualbox-guest-utils
+virtualbox-guest-x11
+xserver-xorg-video-qxl
+xserver-xorg-video-vmware
+```
+
+QEMU and Proxmox primarily benefit from `qemu-guest-agent` for guest status and
+shutdown integration, plus `spice-vdagent` and the QXL Xorg driver for better
+clipboard/display/pointer behavior in SPICE-style consoles. Our QEMU smoke-test
+helper also attaches a USB tablet pointer by default to make host-to-guest mouse
+movement less awkward in visible test windows.
+
+Hyper-V's core storage, network, and input drivers are carried by the Ubuntu
+kernel. The `linux-cloud-tools-*` Hyper-V user daemons are intentionally not
+pulled by this profile yet because the generic meta packages advance the live
+image kernel and headers during customization.
 
 ## DemSunset Theme
 

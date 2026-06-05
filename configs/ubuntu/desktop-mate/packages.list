@@ -33,6 +33,17 @@ wireplumber
 wpasupplicant
 xarchiver
 
+# Virtualization guest integration for QEMU/KVM, Proxmox, SPICE consoles,
+# VMware, and VirtualBox-hosted desktops.
+qemu-guest-agent
+spice-vdagent
+open-vm-tools
+open-vm-tools-desktop
+virtualbox-guest-utils
+virtualbox-guest-x11
+xserver-xorg-video-qxl
+xserver-xorg-video-vmware
+
 # Curated defaults.
 vlc
 vivaldi-stable

@@ -16,11 +16,12 @@ Options:
   --cpus N               Guest vCPUs. Default: 2.
   --accel MODE           QEMU acceleration: auto, kvm, tcg, none. Default: auto.
   --no-rng               Do not attach QEMU's virtio RNG device.
+  --no-tablet            Do not attach a USB tablet pointer device.
   --display DISPLAY      QEMU display backend. Default: default.
 
 Environment overrides:
   QEMU_TIMEOUT, QEMU_BOOT_WAIT, QEMU_MEMORY, QEMU_CPUS, QEMU_ACCEL,
-  QEMU_DISPLAY
+  QEMU_DISPLAY, QEMU_TABLET
 EOF
 }
 
@@ -35,6 +36,7 @@ expect_serial=""
 serial_log=""
 headless=false
 use_rng=true
+use_tablet="${QEMU_TABLET:-true}"
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
@@ -76,6 +78,10 @@ while [ "$#" -gt 0 ]; do
       ;;
     --no-rng)
       use_rng=false
+      shift
+      ;;
+    --no-tablet)
+      use_tablet=false
       shift
       ;;
     --display)
@@ -140,6 +146,10 @@ esac
 
 if [ "$use_rng" = true ]; then
   base_args+=(-device virtio-rng-pci)
+fi
+
+if [ "$use_tablet" = true ]; then
+  base_args+=(-device qemu-xhci,id=demuntu-usb -device usb-tablet,bus=demuntu-usb.0)
 fi
 
 if [ -n "$expect_serial" ]; then

@@ -318,6 +318,8 @@ if [ "$skip_install" = false ]; then
     -netdev "user,id=n1,hostfwd=tcp::$ssh_forward-:22" \
     -device virtio-net-pci,netdev=n1 \
     -device virtio-rng-pci \
+    -device qemu-xhci,id=demuntu-usb \
+    -device usb-tablet,bus=demuntu-usb.0 \
     -serial "file:$serial_log" \
     "${install_monitor_args[@]}" \
     -display "$display" \
@@ -378,6 +380,8 @@ qemu-system-x86_64 \
   -netdev "user,id=n1,hostfwd=tcp::$ssh_forward-:22" \
   -device virtio-net-pci,netdev=n1 \
   -device virtio-rng-pci \
+  -device qemu-xhci,id=demuntu-usb \
+  -device usb-tablet,bus=demuntu-usb.0 \
   -serial "file:$boot_serial_log" \
   -display "$display" \
   -pidfile "$boot_pidfile" \
