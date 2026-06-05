@@ -61,6 +61,11 @@ copy_path "configs/ubuntu"
 copy_glob "configs/spins/demuntu-*.toml" "configs/spins"
 copy_path "packages/meta/demuntu-meta"
 
-for doc in docs/BRANDING.md docs/PACKAGE-SETS.md docs/DEVELOPER-GUIS.md docs/SPIN-MATRIX.md; do
+for doc in \
+  docs/BRANDING.md \
+  docs/PACKAGE-SETS.md \
+  docs/DEVELOPER-GUIS.md \
+  docs/SPIN-MATRIX.md \
+  docs/DEMUNTU-MATE-V1.md; do
   copy_path "$doc"
 done
