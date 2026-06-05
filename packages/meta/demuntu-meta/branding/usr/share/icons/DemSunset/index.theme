@@ -2,7 +2,7 @@
 Name=DemSunset
 Comment=Sunset grey, orange, pink, and silver identity icons for Demuntu
 Inherits=DemChrome,Adwaita,hicolor
-Directories=scalable/apps,scalable/places,scalable/devices
+Directories=scalable/apps,scalable/categories,scalable/places,scalable/devices
 
 [scalable/apps]
 Size=64
@@ -10,6 +10,13 @@ Type=Scalable
 MinSize=16
 MaxSize=256
 Context=Applications
+
+[scalable/categories]
+Size=64
+Type=Scalable
+MinSize=16
+MaxSize=256
+Context=Categories
 
 [scalable/places]
 Size=64

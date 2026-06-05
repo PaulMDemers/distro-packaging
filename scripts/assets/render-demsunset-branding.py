@@ -198,6 +198,185 @@ def write_png(path: Path, width: int, height: int, pixels: bytes) -> None:
     print(path)
 
 
+def write_text(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8", newline="\n")
+    print(path)
+
+
+def svg_doc(body: str) -> str:
+    return (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" '
+        'viewBox="0 0 64 64">\n'
+        f"{body}\n"
+        "</svg>\n"
+    )
+
+
+def folder_svg(glyph: str = "") -> str:
+    return svg_doc(
+        '  <path d="M7 19h18l5 6h27v8H7z" fill="#4a4a52"/>\n'
+        '  <path d="M7 27h50v26H7z" fill="#303138"/>\n'
+        '  <path d="M7 27h50v26H7z" fill="none" stroke="#d7dadd" '
+        'stroke-width="2.5" stroke-linejoin="round"/>\n'
+        '  <path d="M12 34h40v14H12z" fill="#ef7d35"/>\n'
+        '  <path d="M12 44h40v4H12z" fill="#ec5c86"/>\n'
+        f"{glyph}"
+    )
+
+
+def home_svg() -> str:
+    return svg_doc(
+        '  <path d="M9 32 32 13l23 19-4 5-19-16-19 16z" fill="#ef7d35"/>\n'
+        '  <path d="M16 31h32v24H16z" fill="#303138" stroke="#d7dadd" '
+        'stroke-width="2.5" stroke-linejoin="round"/>\n'
+        '  <path d="M27 42h10v13H27z" fill="#ec5c86"/>\n'
+        '  <path d="M21 35h9v7h-9zM34 35h9v7h-9z" fill="#4a4a52"/>'
+    )
+
+
+def trash_svg(full: bool) -> str:
+    fill = "#ec5c86" if full else "#4a4a52"
+    inner = '  <path d="M22 30h20v18H22z" fill="#ef7d35"/>\n' if full else ""
+    return svg_doc(
+        '  <path d="M22 13h20l2 5h9v6H11v-6h9z" fill="#d7dadd"/>\n'
+        f'  <path d="M16 24h32l-3 29H19z" fill="{fill}" stroke="#d7dadd" '
+        'stroke-width="2.5" stroke-linejoin="round"/>\n'
+        f"{inner}"
+        '  <path d="M25 30v17M32 30v17M39 30v17" stroke="#303138" '
+        'stroke-width="3" stroke-linecap="round"/>'
+    )
+
+
+def computer_svg() -> str:
+    return svg_doc(
+        '  <path d="M10 13h44v31H10z" fill="#303138" stroke="#d7dadd" '
+        'stroke-width="2.5" stroke-linejoin="round"/>\n'
+        '  <path d="M15 18h34v20H15z" fill="#1b1c22"/>\n'
+        '  <path d="M18 34h28v4H18z" fill="#ef7d35"/>\n'
+        '  <path d="M26 44h12l2 7h7v4H17v-4h7z" fill="#4a4a52"/>\n'
+        '  <path d="M20 29h24v3H20z" fill="#ec5c86"/>'
+    )
+
+
+def start_here_svg() -> str:
+    return svg_doc(
+        '  <circle cx="32" cy="32" r="26" fill="#303138" stroke="#d7dadd" '
+        'stroke-width="3"/>\n'
+        '  <path d="M32 14 38 27h14L41 36l4 14-13-8-13 8 4-14-11-9h14z" '
+        'fill="#ef7d35"/>\n'
+        '  <path d="M26 27h12l3 9-9 6-9-6z" fill="#ec5c86"/>'
+    )
+
+
+def app_logo_svg(letter: str = "D") -> str:
+    return svg_doc(
+        '  <rect x="9" y="9" width="46" height="46" rx="12" fill="#303138" '
+        'stroke="#d7dadd" stroke-width="3"/>\n'
+        '  <path d="M17 43c8-11 17-15 30-17v17z" fill="#ef7d35"/>\n'
+        '  <path d="M17 38c8-8 18-10 30-9v8c-12-1-22 1-30 8z" fill="#ec5c86"/>\n'
+        f'  <text x="32" y="36" text-anchor="middle" font-family="Sans,Arial" '
+        f'font-size="22" font-weight="700" fill="#f2f0ef">{letter}</text>'
+    )
+
+
+def category_svg(kind: str) -> str:
+    glyphs = {
+        "accessories": '  <path d="M21 42 42 21" stroke="#f2f0ef" stroke-width="5" stroke-linecap="round"/>\n'
+        '  <circle cx="44" cy="19" r="6" fill="#ec5c86"/>',
+        "development": '  <path d="M25 22 15 32l10 10M39 22l10 10-10 10" fill="none" stroke="#f2f0ef" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>\n'
+        '  <path d="M35 19 29 45" stroke="#ec5c86" stroke-width="4" stroke-linecap="round"/>',
+        "education": '  <path d="M13 28 32 18l19 10-19 10z" fill="#f2f0ef"/>\n'
+        '  <path d="M21 35v8c7 4 15 4 22 0v-8" fill="#ec5c86"/>',
+        "games": '  <path d="M19 27h26c5 0 8 4 8 10 0 5-3 9-7 9-4 0-5-4-8-4H26c-3 0-4 4-8 4s-7-4-7-9c0-6 3-10 8-10z" fill="#f2f0ef"/>\n'
+        '  <path d="M21 33v8M17 37h8" stroke="#303138" stroke-width="3" stroke-linecap="round"/>\n'
+        '  <circle cx="40" cy="36" r="3" fill="#ec5c86"/><circle cx="47" cy="39" r="3" fill="#ef7d35"/>',
+        "graphics": '  <path d="M17 42c6-15 14-24 27-26 6 10 2 22-9 28-7 4-13 3-18-2z" fill="#f2f0ef"/>\n'
+        '  <circle cx="37" cy="26" r="4" fill="#ec5c86"/><circle cx="29" cy="35" r="4" fill="#ef7d35"/>',
+        "internet": '  <circle cx="32" cy="32" r="17" fill="none" stroke="#f2f0ef" stroke-width="4"/>\n'
+        '  <path d="M15 32h34M32 15c7 7 7 27 0 34M32 15c-7 7-7 27 0 34" fill="none" stroke="#ec5c86" stroke-width="3"/>',
+        "multimedia": '  <path d="M22 18v28l25-14z" fill="#f2f0ef"/>\n'
+        '  <rect x="15" y="46" width="34" height="5" rx="2.5" fill="#ec5c86"/>',
+        "office": '  <path d="M20 14h20l8 8v28H20z" fill="#f2f0ef"/>\n'
+        '  <path d="M40 14v9h8" fill="#d7dadd"/>\n'
+        '  <path d="M26 31h16M26 38h16M26 45h10" stroke="#303138" stroke-width="3" stroke-linecap="round"/>',
+        "science": '  <path d="M26 15h12M30 15v13L19 48h26L34 28V15" fill="none" stroke="#f2f0ef" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>\n'
+        '  <path d="M25 41h14" stroke="#ec5c86" stroke-width="5" stroke-linecap="round"/>',
+        "system": '  <circle cx="32" cy="32" r="8" fill="#303138"/>\n'
+        '  <path d="M32 13 37 23l11-1-4 10 7 9-11 2-6 9-7-9-11-2 7-9-4-10 11 1z" fill="#f2f0ef" fill-rule="evenodd"/>\n'
+        '  <circle cx="32" cy="32" r="6" fill="#ec5c86"/>',
+        "other": '  <circle cx="23" cy="23" r="6" fill="#f2f0ef"/><circle cx="41" cy="23" r="6" fill="#ec5c86"/>\n'
+        '  <circle cx="23" cy="41" r="6" fill="#ef7d35"/><circle cx="41" cy="41" r="6" fill="#f2f0ef"/>',
+    }
+    glyph = glyphs.get(kind, glyphs["other"])
+    return svg_doc(
+        '  <rect x="9" y="9" width="46" height="46" rx="10" fill="#303138" '
+        'stroke="#d7dadd" stroke-width="2.5"/>\n'
+        '  <path d="M13 46c9-12 22-17 38-15v15z" fill="#ef7d35"/>\n'
+        '  <path d="M13 40c10-8 22-10 38-7v7c-15-3-28-1-38 8z" fill="#ec5c86"/>\n'
+        f"{glyph}"
+    )
+
+
+def write_demsunset_icons(package_root: Path) -> None:
+    icon_root = package_root / "usr/share/icons/DemSunset/scalable"
+    place_glyphs = {
+        "folder.svg": "",
+        "folder-desktop.svg": '  <path d="M22 36h20v10H22z" fill="#303138" stroke="#f2f0ef" stroke-width="2"/>\n'
+        '  <path d="M28 47h8l2 3H26z" fill="#f2f0ef"/>',
+        "user-desktop.svg": '  <path d="M22 36h20v10H22z" fill="#303138" stroke="#f2f0ef" stroke-width="2"/>\n'
+        '  <path d="M28 47h8l2 3H26z" fill="#f2f0ef"/>',
+        "folder-documents.svg": '  <path d="M24 34h13l5 5v11H24z" fill="#f2f0ef"/>\n'
+        '  <path d="M37 34v6h5" fill="#d7dadd"/>\n'
+        '  <path d="M28 42h10M28 47h8" stroke="#303138" stroke-width="2" stroke-linecap="round"/>',
+        "folder-download.svg": '  <path d="M32 34v12M25 40l7 7 7-7" fill="none" stroke="#f2f0ef" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>',
+        "folder-music.svg": '  <path d="M39 34v11a5 5 0 1 1-3-4V34z" fill="#f2f0ef"/>\n'
+        '  <path d="M39 34 48 32v5l-9 2z" fill="#ec5c86"/>',
+        "folder-pictures.svg": '  <path d="M21 35h24v15H21z" fill="#f2f0ef"/>\n'
+        '  <path d="M24 47 31 39l5 5 3-3 5 6z" fill="#303138"/>\n'
+        '  <circle cx="40" cy="39" r="2" fill="#ef7d35"/>',
+        "folder-publicshare.svg": '  <circle cx="27" cy="38" r="4" fill="#f2f0ef"/><circle cx="39" cy="38" r="4" fill="#f2f0ef"/>\n'
+        '  <path d="M21 49c2-5 10-5 12 0M33 49c2-5 10-5 12 0" fill="none" stroke="#f2f0ef" stroke-width="3" stroke-linecap="round"/>',
+        "folder-remote.svg": '  <path d="M21 42h22" stroke="#f2f0ef" stroke-width="3" stroke-linecap="round"/>\n'
+        '  <circle cx="22" cy="42" r="4" fill="#f2f0ef"/><circle cx="32" cy="35" r="4" fill="#ec5c86"/><circle cx="43" cy="42" r="4" fill="#f2f0ef"/>',
+        "folder-saved-search.svg": '  <circle cx="30" cy="40" r="7" fill="none" stroke="#f2f0ef" stroke-width="4"/>\n'
+        '  <path d="M35 45 43 51" stroke="#f2f0ef" stroke-width="4" stroke-linecap="round"/>',
+        "folder-templates.svg": '  <path d="M22 35h20v14H22z" fill="#f2f0ef"/>\n'
+        '  <path d="M27 35v14M32 35v14M37 35v14" stroke="#303138" stroke-width="2"/>',
+        "folder-videos.svg": '  <path d="M21 35h24v16H21z" fill="#f2f0ef"/>\n'
+        '  <path d="M30 39v8l8-4z" fill="#ec5c86"/>',
+    }
+    for name, glyph in place_glyphs.items():
+        write_text(icon_root / "places" / name, folder_svg(glyph))
+
+    write_text(icon_root / "places/user-home.svg", home_svg())
+    write_text(icon_root / "places/user-trash.svg", trash_svg(False))
+    write_text(icon_root / "places/user-trash-full.svg", trash_svg(True))
+    write_text(icon_root / "devices/computer.svg", computer_svg())
+    write_text(icon_root / "apps/start-here.svg", start_here_svg())
+    write_text(icon_root / "apps/distributor-logo-demuntu.svg", app_logo_svg("D"))
+
+    category_map = {
+        "applications-accessories.svg": "accessories",
+        "applications-development.svg": "development",
+        "applications-education.svg": "education",
+        "applications-games.svg": "games",
+        "applications-graphics.svg": "graphics",
+        "applications-internet.svg": "internet",
+        "applications-multimedia.svg": "multimedia",
+        "applications-office.svg": "office",
+        "applications-other.svg": "other",
+        "applications-science.svg": "science",
+        "applications-system.svg": "system",
+        "applications-utilities.svg": "accessories",
+        "preferences-desktop.svg": "system",
+        "preferences-system.svg": "system",
+        "system-tools.svg": "system",
+    }
+    for name, kind in category_map.items():
+        write_text(icon_root / "categories" / name, category_svg(kind))
+
+
 def main() -> int:
     package_root = ROOT / "packages/meta/demuntu-meta/branding"
     wallpaper = make_wallpaper()
@@ -242,6 +421,7 @@ def main() -> int:
         72,
         watermark,
     )
+    write_demsunset_icons(package_root)
     return 0
 
 

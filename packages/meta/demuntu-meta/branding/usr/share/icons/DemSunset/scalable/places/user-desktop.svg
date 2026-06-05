@@ -4,5 +4,6 @@
   <path d="M7 27h50v26H7z" fill="none" stroke="#d7dadd" stroke-width="2.5" stroke-linejoin="round"/>
   <path d="M12 34h40v14H12z" fill="#ef7d35"/>
   <path d="M12 44h40v4H12z" fill="#ec5c86"/>
-
+  <path d="M22 36h20v10H22z" fill="#303138" stroke="#f2f0ef" stroke-width="2"/>
+  <path d="M28 47h8l2 3H26z" fill="#f2f0ef"/>
 </svg>

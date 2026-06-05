@@ -29,6 +29,40 @@ menu,
   color: @dem_fg;
 }
 
+/* MATE Control Center and several older GTK3 tools use explicit views,
+   frames, and viewport widgets that otherwise fall back to a light base. */
+window.background,
+dialog.background,
+.csd.background,
+viewport,
+scrolledwindow,
+frame,
+frame > border,
+iconview,
+iconview.view,
+.view,
+.rubberband,
+stack,
+notebook,
+notebook > stack,
+paned,
+grid,
+box,
+list,
+row {
+  background-color: @dem_bg;
+  color: @dem_fg;
+}
+
+iconview text,
+iconview cell,
+.view text,
+.view cell,
+label,
+row label {
+  color: @dem_fg;
+}
+
 menu,
 menuitem,
 .menu,
@@ -82,7 +116,9 @@ entry,
 combobox,
 spinbutton,
 textview,
+textview text,
 treeview,
+treeview.view,
 list,
 sidebar,
 notebook stack {
@@ -120,6 +156,16 @@ button.suggested-action {
 
 selection,
 *:selected {
+  background-color: @dem_orange;
+  color: @dem_fg;
+}
+
+iconview:selected,
+iconview:selected:focus,
+iconview cell:selected,
+treeview.view:selected,
+treeview.view:selected:focus,
+row:selected {
   background-color: @dem_orange;
   color: @dem_fg;
 }

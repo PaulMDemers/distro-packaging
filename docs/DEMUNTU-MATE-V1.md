@@ -44,7 +44,7 @@ remaining upstream Thunderbird/snap state from the live layer stack.
 
 ```text
 ISO:    dist/images/demuntu-desktop-mate-live.iso
-SHA256: 6b996d67078b2250441c93b2ea9cc416550ca5358e6e5806359c9fa8cf318f4f
+SHA256: 5364cb378f4d67b2e909ff49d4e8e9a129ee085c9673e2cdd4b0fccf30a751d4
 Marker: DEMUNTU_MATE_DESKTOP_READY
 ```
 
@@ -120,6 +120,13 @@ Schema override: /usr/share/glib-2.0/schemas/60_demuntu-mate.gschema.override
 MATE runtime helper: /usr/lib/demuntu/apply-mate-theme
 Compiz defaults: /etc/skel/.config/compiz-1/compizconfig/Default.ini
 ```
+
+Theme and icon sources live under
+`packages/meta/demuntu-meta/branding/usr/share/themes/DemSunset-Dark` and
+`packages/meta/demuntu-meta/branding/usr/share/icons/DemSunset`. The DemSunset
+icon theme includes flat filesystem icons for the standard XDG folders,
+`user-desktop`/`folder-desktop`, and matching app-menu category icons. The
+deterministic generator is `scripts/assets/render-demsunset-branding.py`.
 
 Demuntu MATE uses its own panel layout instead of Ubuntu MATE's `familiar`
 layout. The upstream layout references Brisk Menu, snap Firefox, Evolution, and
