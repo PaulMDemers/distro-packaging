@@ -102,6 +102,50 @@ button:hover {
   border-color: @dem_pink;
 }
 
+toolbar button,
+toolbar toolbutton > button,
+.primary-toolbar button,
+.inline-toolbar button,
+.path-bar button,
+.location-bar button,
+button.image-button {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  padding: 5px 8px;
+}
+
+toolbar button:hover,
+toolbar toolbutton > button:hover,
+.primary-toolbar button:hover,
+.inline-toolbar button:hover,
+.path-bar button:hover,
+.location-bar button:hover,
+button.image-button:hover {
+  background-color: alpha(@dem_silver, 0.10);
+  border-color: alpha(@dem_silver, 0.24);
+  box-shadow: none;
+}
+
+toolbar button:active,
+toolbar button:checked,
+toolbar toolbutton > button:active,
+toolbar toolbutton > button:checked,
+.primary-toolbar button:active,
+.primary-toolbar button:checked,
+.inline-toolbar button:active,
+.inline-toolbar button:checked,
+.path-bar button:active,
+.path-bar button:checked,
+.location-bar button:active,
+.location-bar button:checked,
+button.image-button:active,
+button.image-button:checked {
+  background-color: alpha(@dem_orange, 0.92);
+  border-color: alpha(@dem_pink, 0.62);
+  color: @dem_fg;
+}
+
 button:focus,
 entry:focus,
 treeview:focus,

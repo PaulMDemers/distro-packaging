@@ -43,13 +43,14 @@ June 5, 2026. It includes the clean auxiliary-layer pass that strips the
 remaining upstream Thunderbird/snap state from the live layer stack, and it
 restores the DemSunset GTK CSS to the last known wallpaper-safe selector set.
 It also carries the flatter DemSunset filesystem icons and drive/network
-aliases used by Caja's main pane and Places sidebar. The desktop marker
-validates Demuntu's top and bottom MATE panel layout before declaring the live
-session ready.
+aliases used by Caja's main pane and Places sidebar, plus flatter toolbar and
+pathbar button chrome so those icons do not sit inside heavy beveled controls.
+The desktop marker validates Demuntu's top and bottom MATE panel layout before
+declaring the live session ready.
 
 ```text
 ISO:    dist/images/demuntu-desktop-mate-live.iso
-SHA256: 114243823300951c291aa85148e419e5205872f48e8d37d48e5902844fc7a09c
+SHA256: 8900d3b4615856116e5755dc67f41868016c1c6e5073ebb29112d60e637406e3
 Marker: DEMUNTU_MATE_DESKTOP_READY
 ```
 
