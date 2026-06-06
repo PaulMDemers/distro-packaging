@@ -42,12 +42,14 @@ The current validated MATE release-line ISO was built and boot-tested on
 June 5, 2026. It includes the clean auxiliary-layer pass that strips the
 remaining upstream Thunderbird/snap state from the live layer stack, and it
 restores the DemSunset GTK CSS to the last known wallpaper-safe selector set.
-The desktop marker also validates Demuntu's top and bottom MATE panel layout
-before declaring the live session ready.
+It also carries the flatter DemSunset filesystem icons and drive/network
+aliases used by Caja's main pane and Places sidebar. The desktop marker
+validates Demuntu's top and bottom MATE panel layout before declaring the live
+session ready.
 
 ```text
 ISO:    dist/images/demuntu-desktop-mate-live.iso
-SHA256: b3d3e52882301bf96de401a530525b60a802c59b538ab284c944f2f9b4f4f74b
+SHA256: 114243823300951c291aa85148e419e5205872f48e8d37d48e5902844fc7a09c
 Marker: DEMUNTU_MATE_DESKTOP_READY
 ```
 
@@ -128,8 +130,9 @@ Theme and icon sources live under
 `packages/meta/demuntu-meta/branding/usr/share/themes/DemSunset-Dark` and
 `packages/meta/demuntu-meta/branding/usr/share/icons/DemSunset`. The DemSunset
 icon theme includes flat filesystem icons for the standard XDG folders,
-`user-desktop`/`folder-desktop`, and matching app-menu category icons. The
-deterministic generator is `scripts/assets/render-demsunset-branding.py`.
+`user-desktop`/`folder-desktop`, `drive-harddisk*`, `network-server`,
+`network-workgroup`, and matching app-menu category icons. The deterministic
+generator is `scripts/assets/render-demsunset-branding.py`.
 
 Demuntu MATE uses its own panel layout instead of Ubuntu MATE's `familiar`
 layout. The upstream layout references Brisk Menu, snap Firefox, Evolution, and
