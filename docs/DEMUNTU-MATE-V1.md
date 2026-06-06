@@ -45,12 +45,13 @@ restores the DemSunset GTK CSS to the last known wallpaper-safe selector set.
 It also carries the flatter DemSunset filesystem icons and drive/network
 aliases used by Caja's main pane and Places sidebar, plus flatter toolbar and
 pathbar button chrome so those icons do not sit inside heavy beveled controls.
-The desktop marker validates Demuntu's top and bottom MATE panel layout before
-declaring the live session ready.
+The address/location controls, sidebar rows, and Marco window-control glyphs
+use the same flat DemSunset treatment. The desktop marker validates Demuntu's
+top and bottom MATE panel layout before declaring the live session ready.
 
 ```text
 ISO:    dist/images/demuntu-desktop-mate-live.iso
-SHA256: 8900d3b4615856116e5755dc67f41868016c1c6e5073ebb29112d60e637406e3
+SHA256: 10b50aafeebe48496a37c6bd6c337cb59f822c085cc3c39d0708e5403b09ae0e
 Marker: DEMUNTU_MATE_DESKTOP_READY
 ```
 

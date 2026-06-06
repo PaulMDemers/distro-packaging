@@ -38,18 +38,52 @@
   <draw_ops name="title_unfocused">
     <title color="#bbb8b8" x="(width-title_width)/2" y="((height-title_height)/2)"/>
   </draw_ops>
-  <draw_ops name="button_bg">
-    <rectangle color="#3b3b42" filled="true" x="0" y="0" width="width" height="height"/>
+  <draw_ops name="button_prelight">
+    <rectangle color="#f1c1ad" filled="true" x="1" y="1" width="width-2" height="height-2"/>
+  </draw_ops>
+  <draw_ops name="button_pressed">
+    <rectangle color="#ec5c86" filled="true" x="1" y="1" width="width-2" height="height-2"/>
+  </draw_ops>
+  <draw_ops name="minimize_icon">
+    <line color="#f2f0ef" x1="ButtonIPad" y1="height-ButtonIPad-1" x2="width-ButtonIPad" y2="height-ButtonIPad-1" width="2"/>
+  </draw_ops>
+  <draw_ops name="maximize_icon">
+    <rectangle color="#f2f0ef" filled="false" x="ButtonIPad" y="ButtonIPad" width="width-ButtonIPad*2-1" height="height-ButtonIPad*2-1"/>
+    <line color="#f2f0ef" x1="ButtonIPad" y1="ButtonIPad+1" x2="width-ButtonIPad" y2="ButtonIPad+1" width="2"/>
+  </draw_ops>
+  <draw_ops name="restore_icon">
+    <rectangle color="#f2f0ef" filled="false" x="ButtonIPad+3" y="ButtonIPad" width="width-ButtonIPad*2-4" height="height-ButtonIPad*2-4"/>
+    <line color="#f2f0ef" x1="ButtonIPad+3" y1="ButtonIPad+1" x2="width-ButtonIPad-1" y2="ButtonIPad+1" width="2"/>
+    <rectangle color="#f2f0ef" filled="false" x="ButtonIPad" y="ButtonIPad+3" width="width-ButtonIPad*2-4" height="height-ButtonIPad*2-4"/>
+    <line color="#f2f0ef" x1="ButtonIPad" y1="ButtonIPad+4" x2="width-ButtonIPad-4" y2="ButtonIPad+4" width="2"/>
   </draw_ops>
   <draw_ops name="close_icon">
-    <line color="#f2f0ef" x1="ButtonIPad" y1="ButtonIPad" x2="width-ButtonIPad" y2="height-ButtonIPad"/>
-    <line color="#f2f0ef" x1="ButtonIPad" y1="height-ButtonIPad" x2="width-ButtonIPad" y2="ButtonIPad"/>
+    <line color="#f2f0ef" x1="ButtonIPad" y1="ButtonIPad" x2="width-ButtonIPad" y2="height-ButtonIPad" width="2"/>
+    <line color="#f2f0ef" x1="ButtonIPad" y1="height-ButtonIPad" x2="width-ButtonIPad" y2="ButtonIPad" width="2"/>
   </draw_ops>
   <frame_style name="normal_focused" geometry="normal">
     <piece position="entire_background" draw_ops="titlebar_focused"/>
     <piece position="title" draw_ops="title_focused"/>
-    <button function="close" state="normal" draw_ops="button_bg"/>
+    <button function="minimize" state="normal" draw_ops="minimize_icon"/>
+    <button function="minimize" state="prelight" draw_ops="button_prelight"/>
+    <button function="minimize" state="prelight" draw_ops="minimize_icon"/>
+    <button function="minimize" state="pressed" draw_ops="button_pressed"/>
+    <button function="minimize" state="pressed" draw_ops="minimize_icon"/>
+    <button function="maximize" state="normal" draw_ops="maximize_icon"/>
+    <button function="maximize" state="prelight" draw_ops="button_prelight"/>
+    <button function="maximize" state="prelight" draw_ops="maximize_icon"/>
+    <button function="maximize" state="pressed" draw_ops="button_pressed"/>
+    <button function="maximize" state="pressed" draw_ops="maximize_icon"/>
+    <button function="unmaximize" state="normal" draw_ops="restore_icon"/>
+    <button function="unmaximize" state="prelight" draw_ops="button_prelight"/>
+    <button function="unmaximize" state="prelight" draw_ops="restore_icon"/>
+    <button function="unmaximize" state="pressed" draw_ops="button_pressed"/>
+    <button function="unmaximize" state="pressed" draw_ops="restore_icon"/>
     <button function="close" state="normal" draw_ops="close_icon"/>
+    <button function="close" state="prelight" draw_ops="button_prelight"/>
+    <button function="close" state="prelight" draw_ops="close_icon"/>
+    <button function="close" state="pressed" draw_ops="button_pressed"/>
+    <button function="close" state="pressed" draw_ops="close_icon"/>
   </frame_style>
   <frame_style name="normal_unfocused" geometry="normal">
     <piece position="entire_background" draw_ops="titlebar_unfocused"/>

@@ -174,6 +174,66 @@ button:checked *,
   color: @dem_fg;
 }
 
+toolbar button:checked,
+toolbar toolbutton > button:checked,
+.primary-toolbar button:checked,
+.inline-toolbar button:checked,
+.path-bar button,
+.path-bar button:checked,
+.path-bar button:active,
+.location-bar button,
+.location-bar button:checked,
+.location-bar button:active {
+  background-image: none;
+  background-color: alpha(@dem_silver, 0.08);
+  border-color: alpha(@dem_silver, 0.22);
+  box-shadow: none;
+  color: @dem_fg;
+}
+
+.path-bar button:checked,
+.path-bar button:active,
+.location-bar button:checked,
+.location-bar button:active {
+  background-color: alpha(@dem_orange, 0.88);
+  border-color: alpha(@dem_pink, 0.68);
+}
+
+.path-bar button:hover,
+.location-bar button:hover {
+  background-color: alpha(@dem_silver, 0.14);
+  border-color: alpha(@dem_silver, 0.30);
+}
+
+.sidebar,
+placessidebar,
+placessidebar list,
+treeview.view {
+  background-color: #292a31;
+  color: @dem_fg;
+}
+
+.sidebar row,
+placessidebar row {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.sidebar row:hover,
+placessidebar row:hover,
+treeview.view:hover {
+  background-color: alpha(@dem_silver, 0.10);
+  color: @dem_fg;
+}
+
+.sidebar row:selected,
+placessidebar row:selected,
+treeview.view:selected {
+  background-color: @dem_orange;
+  color: @dem_fg;
+  border-color: alpha(@dem_pink, 0.70);
+}
+
 checkbutton check:checked,
 radiobutton radio:checked {
   background-color: @dem_pink;
