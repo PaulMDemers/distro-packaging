@@ -148,13 +148,42 @@ The MATE runtime helper also seeds panel state at first login when
 against the Demuntu layout, then falls back to explicit gsettings for top and
 bottom panels with safe stock applets.
 
+## Compiz Probe
+
+On June 6, 2026, the current ISO was booted in QEMU with `gtk,gl=on`,
+`virtio-vga-gl`, and a qemu-guest-agent socket. The guest reached the normal
+MATE readiness marker, then a QGA-driven manual `compiz --replace ccp` test
+successfully changed the active window manager to `Compiz`.
+
+The guest GL stack reported direct rendering with Mesa/virgl:
+
+```text
+OpenGL renderer string: virgl (LLVMPIPE (LLVM 20.1.2, 256 bits))
+OpenGL version string: 4.3 (Compatibility Profile) Mesa 26.0.3-1ubuntu1
+```
+
+The Compiz log confirmed `composite`, `opengl`, `decor`, `cube`, `rotate`,
+`expo`, `scale`, `workarounds`, and `animation` started. The only observed
+plugin warning was `ezoom` failing because `mousepoll` was not loaded. That
+should be resolved before enabling Compiz by default.
+
+Repeatable guest-agent helpers live in the packaging repo:
+
+```text
+scripts/test/qga-exec.py
+scripts/test/guest-demuntu-compiz-probe.sh
+scripts/test/guest-demuntu-compiz-status.sh
+```
+
 ## Next Work
 
 1. Boot the MATE ISO visibly in QEMU.
 2. Verify that Demuntu's top and bottom MATE panels appear without panel error
    dialogs.
-3. Verify whether Compiz starts reliably on the live image under QEMU and on
-   real hardware.
-4. Tune Compiz defaults for cube/expo behavior against QEMU and hardware.
-5. Move XFCE-specific branding scripts into legacy/prototype paths or replace
+3. Convert the manual QGA Compiz probe into a formal make target with a
+   `DEMUNTU_COMPIZ_READY` serial marker.
+4. Tune Compiz defaults for cube/expo behavior, including the `mousepoll` /
+   `ezoom` plugin dependency.
+5. Verify Compiz startup and cube/expo behavior on real hardware.
+6. Move XFCE-specific branding scripts into legacy/prototype paths or replace
    them with MATE-aware equivalents.
