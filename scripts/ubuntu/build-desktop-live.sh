@@ -504,6 +504,41 @@ desktop_process="${DESKTOP_DESKTOP_PROCESS}"
 theme_apply="${DESKTOP_THEME_APPLY}"
 i=0
 
+mate_panel_layout_ready() {
+  [ "\$panel_process" = "mate-panel" ] || return 0
+  command -v gsettings >/dev/null 2>&1 || return 0
+
+  live_user="\$1"
+  uid="\$2"
+  home="\$3"
+
+  ids="\$(runuser -u "\$live_user" -- env \
+    DISPLAY=:0 \
+    XAUTHORITY="\$home/.Xauthority" \
+    XDG_RUNTIME_DIR="/run/user/\$uid" \
+    DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/\$uid/bus" \
+    gsettings get org.mate.panel toplevel-id-list 2>/dev/null || printf '[]')"
+  objects="\$(runuser -u "\$live_user" -- env \
+    DISPLAY=:0 \
+    XAUTHORITY="\$home/.Xauthority" \
+    XDG_RUNTIME_DIR="/run/user/\$uid" \
+    DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/\$uid/bus" \
+    gsettings get org.mate.panel object-id-list 2>/dev/null || printf '[]')"
+
+  printf "\\nDEMUNTU_MATE_PANEL_TOPLEVELS %s\\n" "\$ids" > /dev/ttyS0
+  printf "\\nDEMUNTU_MATE_PANEL_OBJECTS %s\\n" "\$objects" > /dev/ttyS0
+
+  case "\$ids" in
+    *"'top'"*"'bottom'"*|*"'bottom'"*"'top'"*) ;;
+    *) return 1 ;;
+  esac
+
+  case "\$objects" in
+    *"'menu-bar'"*"'window-list'"*|*"'window-list'"*"'menu-bar'"*) ;;
+    *) return 1 ;;
+  esac
+}
+
 while [ "\$i" -lt 180 ]; do
   live_user="\$(getent passwd 1000 | cut -d: -f1)"
   [ -n "\$live_user" ] || live_user="ubuntu"
@@ -540,6 +575,14 @@ while [ "\$i" -lt 180 ]; do
         fi
         printf "\\nDEMUNTU_DESKTOP_APPLY_THEME_DONE\\n" > /dev/ttyS0
       fi
+    fi
+    uid="\$(id -u "\$live_user" 2>/dev/null || printf 1000)"
+    home="\$(getent passwd "\$live_user" | cut -d: -f6)"
+    [ -n "\$home" ] || home="/home/\$live_user"
+    if [ -S "/run/user/\$uid/bus" ] && ! mate_panel_layout_ready "\$live_user" "\$uid" "\$home"; then
+      i=\$((i + 1))
+      sleep 2
+      continue
     fi
     printf "\\nDEMUNTU_DESKTOP_SESSION %s\\n" "${DESKTOP_SESSION}" > /dev/ttyS0
     printf "\\n%s\\n" "\$marker" > /dev/ttyS0

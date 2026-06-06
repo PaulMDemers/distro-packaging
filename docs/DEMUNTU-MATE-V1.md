@@ -42,10 +42,12 @@ The current validated MATE release-line ISO was built and boot-tested on
 June 5, 2026. It includes the clean auxiliary-layer pass that strips the
 remaining upstream Thunderbird/snap state from the live layer stack, and it
 restores the DemSunset GTK CSS to the last known wallpaper-safe selector set.
+The desktop marker also validates Demuntu's top and bottom MATE panel layout
+before declaring the live session ready.
 
 ```text
 ISO:    dist/images/demuntu-desktop-mate-live.iso
-SHA256: 5f81a48583f1995d8469705be3aefce8b5f02c29b23063115c26e7b24593989e
+SHA256: b3d3e52882301bf96de401a530525b60a802c59b538ab284c944f2f9b4f4f74b
 Marker: DEMUNTU_MATE_DESKTOP_READY
 ```
 

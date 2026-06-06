@@ -34,26 +34,27 @@ set_relocatable() {
   gsettings set "$schema:$path" "$key" "$value" >/dev/null 2>&1 || true
 }
 
-panel_ids_empty() {
+panel_layout_ready() {
   ids="$(gsettings get org.mate.panel toplevel-id-list 2>/dev/null || printf '[]')"
-  [ "$ids" = "[]" ] || [ "$ids" = "@as []" ]
+  objects="$(gsettings get org.mate.panel object-id-list 2>/dev/null || printf '[]')"
+
+  case "$ids" in
+    *"'top'"*"'bottom'"*|*"'bottom'"*"'top'"*) ;;
+    *) return 1 ;;
+  esac
+
+  case "$objects" in
+    *"'menu-bar'"*"'window-list'"*|*"'window-list'"*"'menu-bar'"*) ;;
+    *) return 1 ;;
+  esac
 }
 
 seed_mate_panels() {
-  panel_ids_empty || return 0
+  panel_layout_ready && return 0
 
   echo "Seeding Demuntu MATE panel layout"
   gsettings set org.mate.panel default-layout "'demuntu'" >/dev/null 2>&1 || true
 
-  if command -v mate-panel >/dev/null 2>&1; then
-    mate-panel --reset --layout demuntu >/dev/null 2>&1 || \
-      mate-panel --reset >/dev/null 2>&1 || true
-    sleep 2
-  fi
-
-  panel_ids_empty || return 0
-
-  echo "Falling back to manual Demuntu MATE panel seed"
   gsettings set org.mate.panel toplevel-id-list "['top','bottom']" >/dev/null 2>&1 || true
   gsettings set org.mate.panel object-id-list "['menu-bar','notification-area','clock','show-desktop','window-list','workspace-switcher']" >/dev/null 2>&1 || true
 
@@ -105,8 +106,9 @@ seed_mate_panels() {
   set_relocatable org.mate.panel.object /org/mate/panel/objects/workspace-switcher/ relative-to-edge "'end'"
   set_relocatable org.mate.panel.object /org/mate/panel/objects/workspace-switcher/ locked true
 
-  if command -v mate-panel >/dev/null 2>&1; then
-    mate-panel --replace >/dev/null 2>&1 &
+  if command -v mate-panel >/dev/null 2>&1 && ! pgrep -u "$(id -u)" -x mate-panel >/dev/null 2>&1; then
+    mate-panel >/dev/null 2>&1 &
+    sleep 2
   fi
 }
 

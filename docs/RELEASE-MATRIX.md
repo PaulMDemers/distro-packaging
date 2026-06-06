@@ -38,7 +38,7 @@ Ubuntu base media is fetched and verified with:
 | `demian-rescue-live` | `dist/images/demian-rescue-live-trixie-amd64.iso` | `112ccc8e2d671c3f37ce147b8f67a0c9ece5252abeea73405ec86ce77ca7454a` | `DEMIAN_RESCUE_READY` |
 | `demuntu-server-autoinstall` | `dist/images/demuntu-server-autoinstall.iso` | `2bdec23528e295e06ea633a6f0eae3374747bee08a674bdfff802182b1220f20` | `DEMUNTU_INSTALL_READY` |
 | `demuntu-desktop-live` | `dist/images/demuntu-desktop-live.iso` | `9a26c7581d694114b11e86a26dab9e4bb0e84a09718bd3c050c753b25ea66974` | `DEMUNTU_DESKTOP_READY` |
-| `demuntu-desktop-mate-live` | `dist/images/demuntu-desktop-mate-live.iso` | `5f81a48583f1995d8469705be3aefce8b5f02c29b23063115c26e7b24593989e` | `DEMUNTU_MATE_DESKTOP_READY` |
+| `demuntu-desktop-mate-live` | `dist/images/demuntu-desktop-mate-live.iso` | `b3d3e52882301bf96de401a530525b60a802c59b538ab284c944f2f9b4f4f74b` | `DEMUNTU_MATE_DESKTOP_READY` |
 
 ## Validation Gates
 
