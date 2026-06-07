@@ -43,10 +43,9 @@ panel_layout_ready() {
     *) return 1 ;;
   esac
 
-  case "$objects" in
-    *"'menu-bar'"*"'window-list'"*|*"'window-list'"*"'menu-bar'"*) ;;
-    *) return 1 ;;
-  esac
+  case "$objects" in *"'menu-bar'"*) ;; *) return 1 ;; esac
+  case "$objects" in *"'window-list'"*) ;; *) return 1 ;; esac
+  case "$objects" in *"'volume-control'"*) ;; *) return 1 ;; esac
 }
 
 seed_mate_panels() {
@@ -56,7 +55,7 @@ seed_mate_panels() {
   gsettings set org.mate.panel default-layout "'demuntu'" >/dev/null 2>&1 || true
 
   gsettings set org.mate.panel toplevel-id-list "['top','bottom']" >/dev/null 2>&1 || true
-  gsettings set org.mate.panel object-id-list "['menu-bar','notification-area','clock','show-desktop','window-list','workspace-switcher']" >/dev/null 2>&1 || true
+  gsettings set org.mate.panel object-id-list "['menu-bar','notification-area','volume-control','clock','show-desktop','window-list','workspace-switcher']" >/dev/null 2>&1 || true
 
   set_relocatable org.mate.panel.toplevel /org/mate/panel/toplevels/top/ name "'Top Panel'"
   set_relocatable org.mate.panel.toplevel /org/mate/panel/toplevels/top/ orientation "'top'"
@@ -79,6 +78,13 @@ seed_mate_panels() {
   set_relocatable org.mate.panel.object /org/mate/panel/objects/notification-area/ position 10
   set_relocatable org.mate.panel.object /org/mate/panel/objects/notification-area/ relative-to-edge "'end'"
   set_relocatable org.mate.panel.object /org/mate/panel/objects/notification-area/ locked true
+
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/volume-control/ object-type "'applet'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/volume-control/ applet-iid "'GvcAppletFactory::GvcApplet'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/volume-control/ toplevel-id "'top'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/volume-control/ position 20
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/volume-control/ relative-to-edge "'end'"
+  set_relocatable org.mate.panel.object /org/mate/panel/objects/volume-control/ locked true
 
   set_relocatable org.mate.panel.object /org/mate/panel/objects/clock/ object-type "'applet'"
   set_relocatable org.mate.panel.object /org/mate/panel/objects/clock/ applet-iid "'ClockAppletFactory::ClockApplet'"

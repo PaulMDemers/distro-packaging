@@ -5,6 +5,7 @@ blueman
 bluez
 curl
 dbus-x11
+dkms
 firmware-sof-signed
 fwupd
 gnome-disk-utility
@@ -14,6 +15,7 @@ iw
 lightdm
 lightdm-gtk-greeter
 linux-firmware
+linux-firmware-broadcom-wireless
 mesa-utils
 modemmanager
 network-manager-gnome
@@ -32,6 +34,12 @@ wireless-regdb
 wireplumber
 wpasupplicant
 xarchiver
+broadcom-sta-dkms
+
+# Live desktop installer.
+ubiquity
+ubiquity-frontend-gtk
+ubiquity-slideshow-ubuntu-mate
 
 # Virtualization guest integration for QEMU/KVM, Proxmox, SPICE consoles,
 # VMware, and VirtualBox-hosted desktops.

@@ -83,7 +83,10 @@ network-manager-gnome
 ubuntu-drivers-common
 software-properties-gtk
 linux-firmware
+linux-firmware-broadcom-wireless
 firmware-sof-signed
+broadcom-sta-dkms
+dkms
 wpasupplicant
 iw
 wireless-regdb

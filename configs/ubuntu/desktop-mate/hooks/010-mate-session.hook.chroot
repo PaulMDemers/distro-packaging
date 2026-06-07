@@ -22,6 +22,17 @@ ln -sfn /etc/systemd/system/display-manager.service \
   /etc/systemd/system/graphical.target.wants/display-manager.service
 systemctl disable gdm3.service gdm.service || true
 
+for launcher in /usr/share/applications/ubiquity.desktop /usr/share/applications/*installer*.desktop; do
+  [ -f "$launcher" ] || continue
+  if grep -qiE 'ubiquity|installer|install' "$launcher"; then
+    sed -i \
+      -e 's/^Name=.*/Name=Install Demuntu/' \
+      -e 's/^Name\[en_US\]=.*/Name[en_US]=Install Demuntu/' \
+      -e 's/^Icon=.*/Icon=distributor-logo-demuntu/' \
+      "$launcher"
+  fi
+done
+
 if [ -d /usr/share/demuntu/compizconfig ]; then
   mkdir -p /etc/compizconfig
   cp /usr/share/demuntu/compizconfig/mate.conf /etc/compizconfig/mate.conf

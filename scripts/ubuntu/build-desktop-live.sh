@@ -533,10 +533,9 @@ mate_panel_layout_ready() {
     *) return 1 ;;
   esac
 
-  case "\$objects" in
-    *"'menu-bar'"*"'window-list'"*|*"'window-list'"*"'menu-bar'"*) ;;
-    *) return 1 ;;
-  esac
+  case "\$objects" in *"'menu-bar'"*) ;; *) return 1 ;; esac
+  case "\$objects" in *"'window-list'"*) ;; *) return 1 ;; esac
+  case "\$objects" in *"'volume-control'"*) ;; *) return 1 ;; esac
 }
 
 while [ "\$i" -lt 180 ]; do

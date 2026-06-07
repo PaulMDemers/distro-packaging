@@ -112,9 +112,11 @@ Depends:
  compiz-plugins-default,
  compiz-plugins-extra,
  compizconfig-settings-manager,
+ dkms,
  dbus-x11,
  demuntu-base,
  eom,
+ broadcom-sta-dkms,
  firmware-sof-signed,
  fusion-icon,
  fwupd,
@@ -124,6 +126,7 @@ Depends:
  lightdm,
  lightdm-gtk-greeter,
  linux-firmware,
+ linux-firmware-broadcom-wireless,
  marco,
  mate-applets,
  mate-control-center,
@@ -167,6 +170,9 @@ Depends:
  xserver-xorg-video-qxl,
  xserver-xorg-video-vmware,
  xarchiver,
+ ubiquity,
+ ubiquity-frontend-gtk,
+ ubiquity-slideshow-ubuntu-mate,
  ${misc:Depends}
 Description: MATE desktop package selection for Demuntu images
  Packages and defaults expected on Demuntu MATE desktop images.

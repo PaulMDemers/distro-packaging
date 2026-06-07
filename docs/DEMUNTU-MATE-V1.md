@@ -39,22 +39,24 @@ session starts `mate-panel` and `caja`.
 ## Current Build
 
 The current validated MATE release-line ISO was built and boot-tested on
-June 6, 2026. It includes the clean auxiliary-layer pass that strips the
+June 7, 2026. It includes the clean auxiliary-layer pass that strips the
 remaining upstream Thunderbird/snap state from the live layer stack, and it
 restores the DemSunset GTK CSS to the last known wallpaper-safe selector set.
 It also carries the flatter DemSunset filesystem icons and drive/network
 aliases used by Caja's main pane and Places sidebar, plus flatter toolbar and
 pathbar button chrome so those icons do not sit inside heavy beveled controls.
 The address/location controls, sidebar rows, and Marco window-control glyphs
-use the same flat DemSunset treatment. Compiz now autostarts by default when
-GL is available, using the DemSunset cube/rotate profile; Marco remains the
-fallback when Compiz or `glxinfo` is unavailable. The desktop marker validates
-Demuntu's top and bottom MATE panel layout before declaring the live session
-ready.
+use the same flat DemSunset treatment. The panel layout now includes MATE's
+GVC volume applet, and the DemSunset icon theme includes scalable volume OSD
+icons. Compiz now autostarts by default when GL is available, using the
+DemSunset cube/rotate profile; Marco remains the fallback when Compiz or
+`glxinfo` is unavailable. Ubiquity is included for live desktop installation.
+The desktop marker validates Demuntu's top and bottom MATE panel layout before
+declaring the live session ready.
 
 ```text
 ISO:    dist/images/demuntu-desktop-mate-live.iso
-SHA256: 8ecf4829f65cb1a0f146a667eddf89869491b28f96ffba408d3a0aa1647e3694
+SHA256: 64ad6f3ac9e6548d60074aa2b6057c04bff600247c9bb442bbd5226c69efcef2
 Marker: DEMUNTU_MATE_DESKTOP_READY
 ```
 
@@ -68,9 +70,13 @@ Audit notes:
   stripped, and auxiliary casper layers no longer contain the old
   `snap-thunderbird` mount unit.
 - The live serial log confirms `DEMUNTU_DESKTOP_SESSION mate`.
+- The live serial log confirms the top panel includes `volume-control`.
 - The theme hook emits `DEMUNTU_DESKTOP_APPLY_THEME_DONE`.
 - The Compiz autostart helper emits `DEMUNTU_COMPIZ_AUTOSTART_BEGIN` and
   starts `compiz --replace ccp` after a successful `glxinfo` probe.
+- The live rootfs includes `ubiquity`, `ubiquity-frontend-gtk`,
+  `ubiquity-slideshow-ubuntu-mate`, `broadcom-sta-dkms`,
+  `linux-firmware-broadcom-wireless`, and `dkms`.
 
 ## Desktop Stack
 
@@ -91,6 +97,23 @@ compiz-plugins
 compiz-plugins-default
 compiz-plugins-extra
 fusion-icon
+ubiquity
+ubiquity-frontend-gtk
+ubiquity-slideshow-ubuntu-mate
+```
+
+The live installer launcher is branded as `Install Demuntu` and executes
+`ubiquity gtk_ui`. Demuntu Welcome also falls back to `ubiquity gtk_ui` if no
+installer desktop entry is discoverable.
+
+MacBook Air Broadcom Wi-Fi coverage is handled by the normal Ubuntu firmware
+stack plus Resolute's Broadcom STA DKMS package:
+
+```text
+linux-firmware
+linux-firmware-broadcom-wireless
+broadcom-sta-dkms
+dkms
 ```
 
 The desktop profile also carries virtualization guest integration for common
@@ -140,7 +163,8 @@ Theme and icon sources live under
 `packages/meta/demuntu-meta/branding/usr/share/icons/DemSunset`. The DemSunset
 icon theme includes flat filesystem icons for the standard XDG folders,
 `user-desktop`/`folder-desktop`, `drive-harddisk*`, `network-server`,
-`network-workgroup`, and matching app-menu category icons. The deterministic
+`network-workgroup`, matching app-menu category icons, and scalable
+`audio-volume-*` status icons for the keyboard volume OSD. The deterministic
 generator is `scripts/assets/render-demsunset-branding.py`.
 
 Demuntu MATE uses its own panel layout instead of Ubuntu MATE's `familiar`

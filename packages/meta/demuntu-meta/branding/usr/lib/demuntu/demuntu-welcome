@@ -212,6 +212,8 @@ def launch_installer() -> str:
         ["ubuntu-desktop-installer"],
         ["ubuntu-desktop-bootstrap"],
         ["snap", "run", "ubuntu-desktop-bootstrap"],
+        ["ubiquity", "gtk_ui"],
+        ["ubiquity"],
     ):
         if shutil.which(command[0]):
             subprocess.Popen(command, start_new_session=True)

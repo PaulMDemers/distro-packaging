@@ -340,6 +340,35 @@ def category_svg(kind: str) -> str:
     )
 
 
+def volume_svg(level: str, symbolic: bool = False) -> str:
+    fg = "#f2f0ef" if not symbolic else "#ffffff"
+    accent = "#ec5c86" if level in {"muted", "off"} else "#ef7d35"
+    waves = {
+        "low": 1,
+        "medium": 2,
+        "high": 3,
+    }.get(level, 0)
+    body = [
+        f'  <path d="M11 27h10l14-12v34L21 37H11z" fill="{fg}"/>',
+        f'  <path d="M22 28v8l9 7V21z" fill="{accent}"/>',
+    ]
+    if level in {"muted", "off"}:
+        body.extend(
+            [
+                f'  <path d="M43 25 55 39M55 25 43 39" stroke="{fg}" stroke-width="5" stroke-linecap="round"/>',
+                f'  <path d="M43 25 55 39" stroke="{accent}" stroke-width="2" stroke-linecap="round"/>',
+            ]
+        )
+    else:
+        if waves >= 1:
+            body.append(f'  <path d="M41 27c3 3 3 7 0 10" fill="none" stroke="{fg}" stroke-width="4" stroke-linecap="round"/>')
+        if waves >= 2:
+            body.append(f'  <path d="M47 22c6 6 6 15 0 21" fill="none" stroke="{fg}" stroke-width="4" stroke-linecap="round"/>')
+        if waves >= 3:
+            body.append(f'  <path d="M53 17c9 9 9 24 0 33" fill="none" stroke="{fg}" stroke-width="4" stroke-linecap="round"/>')
+    return svg_doc("\n".join(body))
+
+
 def write_demsunset_icons(package_root: Path) -> None:
     icon_root = package_root / "usr/share/icons/DemSunset/scalable"
     place_glyphs = {
@@ -404,6 +433,18 @@ def write_demsunset_icons(package_root: Path) -> None:
     }
     for name, kind in category_map.items():
         write_text(icon_root / "categories" / name, category_svg(kind))
+
+    status_levels = {
+        "audio-volume-muted.svg": "muted",
+        "audio-volume-off.svg": "off",
+        "audio-volume-low.svg": "low",
+        "audio-volume-medium.svg": "medium",
+        "audio-volume-high.svg": "high",
+    }
+    for name, level in status_levels.items():
+        write_text(icon_root / "status" / name, volume_svg(level))
+        symbolic_name = name.replace(".svg", "-symbolic.svg")
+        write_text(icon_root / "status" / symbolic_name, volume_svg(level, symbolic=True))
 
 
 def main() -> int:

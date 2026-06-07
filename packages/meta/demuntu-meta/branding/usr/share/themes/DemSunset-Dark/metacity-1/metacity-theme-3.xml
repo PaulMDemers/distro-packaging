@@ -58,38 +58,29 @@
     <line color="#f2f0ef" x1="ButtonIPad" y1="height-ButtonIPad-1" x2="width-ButtonIPad" y2="height-ButtonIPad-1" width="2"/>
   </draw_ops>
   <draw_ops name="maximize_icon">
-    <rectangle color="#f2f0ef" filled="false" x="ButtonIPad" y="ButtonIPad" width="width-ButtonIPad*2-1" height="height-ButtonIPad*2-1"/>
-    <line color="#f2f0ef" x1="ButtonIPad" y1="ButtonIPad+1" x2="width-ButtonIPad" y2="ButtonIPad+1" width="2"/>
+    <rectangle color="#f2f0ef" filled="true" x="ButtonIPad" y="ButtonIPad" width="width-ButtonIPad*2-1" height="height-ButtonIPad*2-1"/>
   </draw_ops>
   <draw_ops name="maximize_prelight">
     <rectangle color="#f1c1ad" filled="true" x="1" y="1" width="width-2" height="height-2"/>
-    <rectangle color="#f2f0ef" filled="false" x="ButtonIPad" y="ButtonIPad" width="width-ButtonIPad*2-1" height="height-ButtonIPad*2-1"/>
-    <line color="#f2f0ef" x1="ButtonIPad" y1="ButtonIPad+1" x2="width-ButtonIPad" y2="ButtonIPad+1" width="2"/>
+    <rectangle color="#f2f0ef" filled="true" x="ButtonIPad" y="ButtonIPad" width="width-ButtonIPad*2-1" height="height-ButtonIPad*2-1"/>
   </draw_ops>
   <draw_ops name="maximize_pressed">
     <rectangle color="#ec5c86" filled="true" x="1" y="1" width="width-2" height="height-2"/>
-    <rectangle color="#f2f0ef" filled="false" x="ButtonIPad" y="ButtonIPad" width="width-ButtonIPad*2-1" height="height-ButtonIPad*2-1"/>
-    <line color="#f2f0ef" x1="ButtonIPad" y1="ButtonIPad+1" x2="width-ButtonIPad" y2="ButtonIPad+1" width="2"/>
+    <rectangle color="#f2f0ef" filled="true" x="ButtonIPad" y="ButtonIPad" width="width-ButtonIPad*2-1" height="height-ButtonIPad*2-1"/>
   </draw_ops>
   <draw_ops name="restore_icon">
-    <rectangle color="#f2f0ef" filled="false" x="ButtonIPad+3" y="ButtonIPad" width="width-ButtonIPad*2-4" height="height-ButtonIPad*2-4"/>
-    <line color="#f2f0ef" x1="ButtonIPad+3" y1="ButtonIPad+1" x2="width-ButtonIPad-1" y2="ButtonIPad+1" width="2"/>
-    <rectangle color="#f2f0ef" filled="false" x="ButtonIPad" y="ButtonIPad+3" width="width-ButtonIPad*2-4" height="height-ButtonIPad*2-4"/>
-    <line color="#f2f0ef" x1="ButtonIPad" y1="ButtonIPad+4" x2="width-ButtonIPad-4" y2="ButtonIPad+4" width="2"/>
+    <rectangle color="#f2f0ef" filled="true" x="ButtonIPad+3" y="ButtonIPad" width="width-ButtonIPad*2-4" height="height-ButtonIPad*2-4"/>
+    <rectangle color="#f2f0ef" filled="true" x="ButtonIPad" y="ButtonIPad+3" width="width-ButtonIPad*2-4" height="height-ButtonIPad*2-4"/>
   </draw_ops>
   <draw_ops name="restore_prelight">
     <rectangle color="#f1c1ad" filled="true" x="1" y="1" width="width-2" height="height-2"/>
-    <rectangle color="#f2f0ef" filled="false" x="ButtonIPad+3" y="ButtonIPad" width="width-ButtonIPad*2-4" height="height-ButtonIPad*2-4"/>
-    <line color="#f2f0ef" x1="ButtonIPad+3" y1="ButtonIPad+1" x2="width-ButtonIPad-1" y2="ButtonIPad+1" width="2"/>
-    <rectangle color="#f2f0ef" filled="false" x="ButtonIPad" y="ButtonIPad+3" width="width-ButtonIPad*2-4" height="height-ButtonIPad*2-4"/>
-    <line color="#f2f0ef" x1="ButtonIPad" y1="ButtonIPad+4" x2="width-ButtonIPad-4" y2="ButtonIPad+4" width="2"/>
+    <rectangle color="#f2f0ef" filled="true" x="ButtonIPad+3" y="ButtonIPad" width="width-ButtonIPad*2-4" height="height-ButtonIPad*2-4"/>
+    <rectangle color="#f2f0ef" filled="true" x="ButtonIPad" y="ButtonIPad+3" width="width-ButtonIPad*2-4" height="height-ButtonIPad*2-4"/>
   </draw_ops>
   <draw_ops name="restore_pressed">
     <rectangle color="#ec5c86" filled="true" x="1" y="1" width="width-2" height="height-2"/>
-    <rectangle color="#f2f0ef" filled="false" x="ButtonIPad+3" y="ButtonIPad" width="width-ButtonIPad*2-4" height="height-ButtonIPad*2-4"/>
-    <line color="#f2f0ef" x1="ButtonIPad+3" y1="ButtonIPad+1" x2="width-ButtonIPad-1" y2="ButtonIPad+1" width="2"/>
-    <rectangle color="#f2f0ef" filled="false" x="ButtonIPad" y="ButtonIPad+3" width="width-ButtonIPad*2-4" height="height-ButtonIPad*2-4"/>
-    <line color="#f2f0ef" x1="ButtonIPad" y1="ButtonIPad+4" x2="width-ButtonIPad-4" y2="ButtonIPad+4" width="2"/>
+    <rectangle color="#f2f0ef" filled="true" x="ButtonIPad+3" y="ButtonIPad" width="width-ButtonIPad*2-4" height="height-ButtonIPad*2-4"/>
+    <rectangle color="#f2f0ef" filled="true" x="ButtonIPad" y="ButtonIPad+3" width="width-ButtonIPad*2-4" height="height-ButtonIPad*2-4"/>
   </draw_ops>
   <draw_ops name="close_icon">
     <line color="#f2f0ef" x1="ButtonIPad" y1="ButtonIPad" x2="width-ButtonIPad" y2="height-ButtonIPad" width="2"/>
