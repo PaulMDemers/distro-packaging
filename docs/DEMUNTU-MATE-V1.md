@@ -39,19 +39,22 @@ session starts `mate-panel` and `caja`.
 ## Current Build
 
 The current validated MATE release-line ISO was built and boot-tested on
-June 5, 2026. It includes the clean auxiliary-layer pass that strips the
+June 6, 2026. It includes the clean auxiliary-layer pass that strips the
 remaining upstream Thunderbird/snap state from the live layer stack, and it
 restores the DemSunset GTK CSS to the last known wallpaper-safe selector set.
 It also carries the flatter DemSunset filesystem icons and drive/network
 aliases used by Caja's main pane and Places sidebar, plus flatter toolbar and
 pathbar button chrome so those icons do not sit inside heavy beveled controls.
 The address/location controls, sidebar rows, and Marco window-control glyphs
-use the same flat DemSunset treatment. The desktop marker validates Demuntu's
-top and bottom MATE panel layout before declaring the live session ready.
+use the same flat DemSunset treatment. Compiz now autostarts by default when
+GL is available, using the DemSunset cube/rotate profile; Marco remains the
+fallback when Compiz or `glxinfo` is unavailable. The desktop marker validates
+Demuntu's top and bottom MATE panel layout before declaring the live session
+ready.
 
 ```text
 ISO:    dist/images/demuntu-desktop-mate-live.iso
-SHA256: 10b50aafeebe48496a37c6bd6c337cb59f822c085cc3c39d0708e5403b09ae0e
+SHA256: 8ecf4829f65cb1a0f146a667eddf89869491b28f96ffba408d3a0aa1647e3694
 Marker: DEMUNTU_MATE_DESKTOP_READY
 ```
 
@@ -66,6 +69,8 @@ Audit notes:
   `snap-thunderbird` mount unit.
 - The live serial log confirms `DEMUNTU_DESKTOP_SESSION mate`.
 - The theme hook emits `DEMUNTU_DESKTOP_APPLY_THEME_DONE`.
+- The Compiz autostart helper emits `DEMUNTU_COMPIZ_AUTOSTART_BEGIN` and
+  starts `compiz --replace ccp` after a successful `glxinfo` probe.
 
 ## Desktop Stack
 
@@ -125,7 +130,9 @@ Plymouth theme: demuntu-sunset
 Panel layout: /usr/share/mate-panel/layouts/demuntu.layout
 Schema override: /usr/share/glib-2.0/schemas/60_demuntu-mate.gschema.override
 MATE runtime helper: /usr/lib/demuntu/apply-mate-theme
-Compiz defaults: /etc/skel/.config/compiz-1/compizconfig/Default.ini
+Compiz skeleton defaults: /etc/skel/.config/compiz-1/compizconfig/Default.ini
+Compiz MATE profile source: /usr/share/demuntu/compizconfig/mate.ini
+Compiz MATE selector source: /usr/share/demuntu/compizconfig/mate.conf
 ```
 
 Theme and icon sources live under
@@ -139,9 +146,10 @@ generator is `scripts/assets/render-demsunset-branding.py`.
 Demuntu MATE uses its own panel layout instead of Ubuntu MATE's `familiar`
 layout. The upstream layout references Brisk Menu, snap Firefox, Evolution, and
 indicator applets, which are intentionally absent from Demuntu's trimmed package
-set and can trigger repeated panel error dialogs. Compiz remains installed and
-configured, but it is no longer enabled as an automatic first-login replacement
-until the base MATE session is stable.
+set and can trigger repeated panel error dialogs. The MATE image hook also
+copies the Demuntu Compiz MATE selector/profile into `/etc/compizconfig` after
+Ubuntu MATE packages install their defaults, avoiding a dpkg ownership conflict
+with `ubuntu-mate-default-settings`.
 
 The MATE runtime helper also seeds panel state at first login when
 `org.mate.panel toplevel-id-list` is empty. It first asks `mate-panel` to reset
@@ -150,10 +158,10 @@ bottom panels with safe stock applets.
 
 ## Compiz Probe
 
-On June 6, 2026, the current ISO was booted in QEMU with `gtk,gl=on`,
+On June 6, 2026, the MATE ISO was booted in QEMU with `gtk,gl=on`,
 `virtio-vga-gl`, and a qemu-guest-agent socket. The guest reached the normal
-MATE readiness marker, then a QGA-driven manual `compiz --replace ccp` test
-successfully changed the active window manager to `Compiz`.
+MATE readiness marker, then the default Demuntu autostart helper successfully
+changed the active window manager to `Compiz`.
 
 The guest GL stack reported direct rendering with Mesa/virgl:
 
@@ -162,10 +170,15 @@ OpenGL renderer string: virgl (LLVMPIPE (LLVM 20.1.2, 256 bits))
 OpenGL version string: 4.3 (Compatibility Profile) Mesa 26.0.3-1ubuntu1
 ```
 
-The Compiz log confirmed `composite`, `opengl`, `decor`, `cube`, `rotate`,
-`expo`, `scale`, `workarounds`, and `animation` started. The only observed
-plugin warning was `ezoom` failing because `mousepoll` was not loaded. That
-should be resolved before enabling Compiz by default.
+The Compiz log confirmed `composite`, `opengl`, `decor`, `mousepoll`, `cube`,
+`rotate`, `expo`, `ezoom`, `scale`, and `animation` started from the default
+profile. `wall` is intentionally not loaded for this profile.
+
+The final rebuild after the metacity decorator XML cleanup passed the standard
+serial smoke test. The host does not expose a DRM render node for QEMU
+`egl-headless`, and the visible GTK/QGA path wedged WSL during the final
+decorator-only retest, so the final GL/cube result is carried forward from the
+immediately preceding QGA pass with the unchanged Compiz profile.
 
 Repeatable guest-agent helpers live in the packaging repo:
 
@@ -177,13 +190,10 @@ scripts/test/guest-demuntu-compiz-status.sh
 
 ## Next Work
 
-1. Boot the MATE ISO visibly in QEMU.
+1. Verify Compiz startup and cube/expo behavior on real hardware.
 2. Verify that Demuntu's top and bottom MATE panels appear without panel error
    dialogs.
 3. Convert the manual QGA Compiz probe into a formal make target with a
    `DEMUNTU_COMPIZ_READY` serial marker.
-4. Tune Compiz defaults for cube/expo behavior, including the `mousepoll` /
-   `ezoom` plugin dependency.
-5. Verify Compiz startup and cube/expo behavior on real hardware.
-6. Move XFCE-specific branding scripts into legacy/prototype paths or replace
+4. Move XFCE-specific branding scripts into legacy/prototype paths or replace
    them with MATE-aware equivalents.

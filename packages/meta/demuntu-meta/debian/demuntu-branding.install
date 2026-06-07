@@ -6,6 +6,7 @@ branding/usr/bin usr/
 branding/usr/lib/demuntu usr/lib/
 branding/usr/share/backgrounds/demuntu usr/share/backgrounds/
 branding/usr/share/demuntu/application-overrides usr/share/demuntu/
+branding/usr/share/demuntu/compizconfig usr/share/demuntu/
 branding/usr/share/icons/DemChrome usr/share/icons/
 branding/usr/share/icons/DemSunset usr/share/icons/
 branding/usr/share/applications usr/share/

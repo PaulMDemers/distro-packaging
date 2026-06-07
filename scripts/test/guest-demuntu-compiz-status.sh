@@ -37,8 +37,11 @@ if [ -n "$live_user" ]; then
   run_as_live_user timeout 12 sh -lc 'glxinfo -B 2>&1 | sed -n "1,60p"' || true
 fi
 
-echo "== compiz log =="
+echo "== compiz manual log =="
 sed -n '1,200p' /tmp/demuntu-compiz-manual.log 2>/dev/null || true
+
+echo "== compiz autostart log =="
+sed -n '1,200p' /tmp/demuntu-compiz-autostart.log 2>/dev/null || true
 
 echo "== users =="
 id demuntu || true

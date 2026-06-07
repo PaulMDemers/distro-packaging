@@ -22,19 +22,34 @@ ln -sfn /etc/systemd/system/display-manager.service \
   /etc/systemd/system/graphical.target.wants/display-manager.service
 systemctl disable gdm3.service gdm.service || true
 
+if [ -d /usr/share/demuntu/compizconfig ]; then
+  mkdir -p /etc/compizconfig
+  cp /usr/share/demuntu/compizconfig/mate.conf /etc/compizconfig/mate.conf
+  cp /usr/share/demuntu/compizconfig/mate.ini /etc/compizconfig/mate.ini
+fi
+
 mkdir -p /etc/skel/.config/autostart /usr/local/bin
 cat > /usr/local/bin/demuntu-compiz-start <<'EOF'
 #!/bin/sh
 
+log=/tmp/demuntu-compiz-autostart.log
+exec >>"$log" 2>&1
+
+echo "DEMUNTU_COMPIZ_AUTOSTART_BEGIN"
+date
+
 if ! command -v compiz >/dev/null 2>&1; then
+  echo "DEMUNTU_COMPIZ_FALLBACK missing compiz"
   exec marco --replace
 fi
 
-if ! command -v glxinfo >/dev/null 2>&1 || ! glxinfo >/dev/null 2>&1; then
+if ! command -v glxinfo >/dev/null 2>&1 || ! timeout 10 glxinfo >/dev/null 2>&1; then
+  echo "DEMUNTU_COMPIZ_FALLBACK glxinfo failed"
   exec marco --replace
 fi
 
 sleep 3
+echo "DEMUNTU_COMPIZ_REPLACE_BEGIN"
 exec compiz --replace ccp
 EOF
 chmod 0755 /usr/local/bin/demuntu-compiz-start
@@ -45,7 +60,7 @@ Type=Application
 Name=Demuntu Compiz
 Exec=/usr/local/bin/demuntu-compiz-start
 OnlyShowIn=MATE;
-X-MATE-Autostart-enabled=false
+X-MATE-Autostart-enabled=true
 NoDisplay=true
 EOF
 
