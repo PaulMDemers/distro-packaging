@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Install Demuntu
+Comment=Install Demuntu to this computer
+Exec=demuntu-install
+Icon=distributor-logo-demuntu
+Terminal=false
+Categories=System;Settings;
+Keywords=install;installer;demuntu;ubuntu;desktop;

@@ -39,7 +39,7 @@ session starts `mate-panel` and `caja`.
 ## Current Build
 
 The current validated MATE release-line ISO was built and boot-tested on
-June 7, 2026. It includes the clean auxiliary-layer pass that strips the
+June 23, 2026. It includes the clean auxiliary-layer pass that strips the
 remaining upstream Thunderbird/snap state from the live layer stack, and it
 restores the DemSunset GTK CSS to the last known wallpaper-safe selector set.
 It also carries the flatter DemSunset filesystem icons and drive/network
@@ -52,11 +52,13 @@ icons. Compiz now autostarts by default when GL is available, using the
 DemSunset cube/rotate profile; Marco remains the fallback when Compiz or
 `glxinfo` is unavailable. Ubiquity is included for live desktop installation.
 The desktop marker validates Demuntu's top and bottom MATE panel layout before
-declaring the live session ready.
+declaring the live session ready. The live installer launcher is now a
+Demuntu-owned wrapper shared by the desktop icon, Welcome button, and branded
+Ubiquity launcher.
 
 ```text
 ISO:    dist/images/demuntu-desktop-mate-live.iso
-SHA256: 64ad6f3ac9e6548d60074aa2b6057c04bff600247c9bb442bbd5226c69efcef2
+SHA256: 1f893c48918f342bf31ab4db2e46e470c3a79947bdea8690a461f4af8cc177ca
 Marker: DEMUNTU_MATE_DESKTOP_READY
 ```
 
@@ -103,8 +105,12 @@ ubiquity-slideshow-ubuntu-mate
 ```
 
 The live installer launcher is branded as `Install Demuntu` and executes
-`ubiquity gtk_ui`. Demuntu Welcome also falls back to `ubiquity gtk_ui` if no
-installer desktop entry is discoverable.
+`demuntu-install`, a Demuntu-owned wrapper that starts `ubiquity gtk_ui` with
+the live desktop environment preserved. The live image hook also rewrites
+Ubiquity's upstream desktop entry to that wrapper and grants passwordless
+Ubiquity launch rights only to the live `ubuntu`/`demuntu` users. Runtime logs
+are written to `~/.cache/demuntu-installer-launch.log` and
+`~/.cache/demuntu-installer.log`.
 
 MacBook Air Broadcom Wi-Fi coverage is handled by the normal Ubuntu firmware
 stack plus Resolute's Broadcom STA DKMS package:

@@ -200,15 +200,30 @@ def command_from_desktop_entry(entry: DesktopEntry) -> list[str]:
     return cleaned
 
 
+def launch_background(command: list[str], label: str) -> str:
+    log_dir = Path(os.environ.get("XDG_CACHE_HOME", str(Path.home() / ".cache")))
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_path = log_dir / "demuntu-installer-launch.log"
+    with log_path.open("a", encoding="utf-8") as log:
+        log.write(f"Launching {label}: {' '.join(command)}\n")
+        subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
+    return f"Launched {label}. Log: {log_path}\n"
+
+
 def launch_installer() -> str:
+    for command in (["demuntu-install"], ["/usr/bin/demuntu-install"]):
+        if shutil.which(command[0]) or Path(command[0]).exists():
+            return launch_background(command, "Install Demuntu")
+
     entries = installer_entries()
     if entries:
         command = command_from_desktop_entry(entries[0])
         if command:
-            subprocess.Popen(command, start_new_session=True)
-            return f"Launched {entries[0].name}.\n"
+            return launch_background(command, entries[0].name)
 
     for command in (
+        ["demuntu-install"],
+        ["/usr/bin/demuntu-install"],
         ["ubuntu-desktop-installer"],
         ["ubuntu-desktop-bootstrap"],
         ["snap", "run", "ubuntu-desktop-bootstrap"],
@@ -216,8 +231,7 @@ def launch_installer() -> str:
         ["ubiquity"],
     ):
         if shutil.which(command[0]):
-            subprocess.Popen(command, start_new_session=True)
-            return f"Launched {' '.join(command)}.\n"
+            return launch_background(command, " ".join(command))
 
     return "No desktop installer launcher was found in this live session.\n"
 

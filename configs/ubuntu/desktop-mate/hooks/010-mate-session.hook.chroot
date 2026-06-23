@@ -22,12 +22,27 @@ ln -sfn /etc/systemd/system/display-manager.service \
   /etc/systemd/system/graphical.target.wants/display-manager.service
 systemctl disable gdm3.service gdm.service || true
 
+mkdir -p /etc/skel/Desktop /etc/sudoers.d
+
+if [ -f "/etc/skel/Desktop/Install Demuntu.desktop" ]; then
+  chmod 0755 "/etc/skel/Desktop/Install Demuntu.desktop"
+fi
+
+if [ -x /usr/bin/demuntu-install ]; then
+  cat > /etc/sudoers.d/demuntu-live-installer <<'EOF'
+ubuntu ALL=(root) NOPASSWD: /usr/bin/ubiquity
+demuntu ALL=(root) NOPASSWD: /usr/bin/ubiquity
+EOF
+  chmod 0440 /etc/sudoers.d/demuntu-live-installer
+fi
+
 for launcher in /usr/share/applications/ubiquity.desktop /usr/share/applications/*installer*.desktop; do
   [ -f "$launcher" ] || continue
   if grep -qiE 'ubiquity|installer|install' "$launcher"; then
     sed -i \
       -e 's/^Name=.*/Name=Install Demuntu/' \
       -e 's/^Name\[en_US\]=.*/Name[en_US]=Install Demuntu/' \
+      -e 's#^Exec=.*#Exec=demuntu-install#' \
       -e 's/^Icon=.*/Icon=distributor-logo-demuntu/' \
       "$launcher"
   fi

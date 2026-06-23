@@ -1,0 +1,58 @@
+#!/bin/sh
+set -eu
+
+log_dir="${XDG_CACHE_HOME:-${HOME:-/tmp}/.cache}"
+mkdir -p "$log_dir" 2>/dev/null || true
+log_file="$log_dir/demuntu-installer.log"
+
+{
+  echo "DEMUNTU_INSTALLER_LAUNCH_BEGIN"
+  date
+  echo "uid=$(id -u) user=$(id -un 2>/dev/null || true)"
+  echo "display=${DISPLAY:-}"
+  echo "session_bus=${DBUS_SESSION_BUS_ADDRESS:-}"
+} >>"$log_file" 2>&1
+
+export DISPLAY="${DISPLAY:-:0}"
+export XAUTHORITY="${XAUTHORITY:-${HOME:-/tmp}/.Xauthority}"
+export XDG_DATA_DIRS="${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+
+if ! command -v ubiquity >/dev/null 2>&1; then
+  {
+    echo "DEMUNTU_INSTALLER_LAUNCH_FAILED ubiquity missing"
+    date
+  } >>"$log_file" 2>&1
+  if command -v xmessage >/dev/null 2>&1; then
+    xmessage -center "No desktop installer was found in this live session."
+  fi
+  exit 1
+fi
+
+if [ "$(id -u)" -eq 0 ]; then
+  exec ubiquity gtk_ui >>"$log_file" 2>&1
+fi
+
+if command -v sudo >/dev/null 2>&1; then
+  exec sudo --preserve-env=DISPLAY,DBUS_SESSION_BUS_ADDRESS,XDG_DATA_DIRS,XDG_RUNTIME_DIR,GTK_THEME,XAUTHORITY \
+    ubiquity gtk_ui >>"$log_file" 2>&1
+fi
+
+if command -v pkexec >/dev/null 2>&1; then
+  exec pkexec env \
+    DISPLAY="$DISPLAY" \
+    XAUTHORITY="$XAUTHORITY" \
+    DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-}" \
+    XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-}" \
+    XDG_DATA_DIRS="$XDG_DATA_DIRS" \
+    GTK_THEME="${GTK_THEME:-}" \
+    ubiquity gtk_ui >>"$log_file" 2>&1
+fi
+
+{
+  echo "DEMUNTU_INSTALLER_LAUNCH_FAILED no privilege helper"
+  date
+} >>"$log_file" 2>&1
+if command -v xmessage >/dev/null 2>&1; then
+  xmessage -center "Demuntu needs sudo or pkexec to start the installer."
+fi
+exit 1
